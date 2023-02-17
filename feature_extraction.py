@@ -27,8 +27,10 @@ def feature_extracting_img(img_path) -> None:
     predicted_y = np.reshape(predicted_y, predicted_y.shape[1])
     img_vectors[img] = predicted_y
 
-def feature_extracting():
+
+def feature_extracting(dataset_path):
     for img_path in all_img_paths:
         feature_extracting_img(img_path=img_path)
     feature_extracting_img(query_path)
+    return img_vectors
 
