@@ -3,7 +3,7 @@ from similarity import load_similarity
 
 
 def main():
-    dataset_path = ""
+    dataset_path = "D:\PycharmProjects\visual-search\Flicker8k_Dataset"
     img_vectors = feature_extracting(dataset_path)
     load_similarity(similarity_name='cosine',
                     dataset_path=dataset_path,
