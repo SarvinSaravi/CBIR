@@ -2,39 +2,50 @@ from models import load_model
 
 import os
 import numpy as np
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.application import ResNet50
+import keras.utils as ut
+from keras.preprocessing import image
+from keras.applications import ResNet50
+from keras.applications.resnet import preprocess_input
 
-img_vectors = dict()
-def preprocess_image(img):
-    img = image.img_to_array(img)
+
+def preprocessing(img):
+    img = ut.img_to_array(img)
     img = np.expand_dims(img, axis=0)
-    img = ResNet50.preprocess_input(img)
+    img = preprocess_input(img)
     return img
 
 
-def feature_extracting_img(img_path,
-                           image_size=(224, 224),
-                           ) -> None:
+def loading_images(dataset_path,
+                   image_size=(224, 224),
+                   ) -> (list, list):
+    image_names, image_list = list(), list()
+    all_img_paths = os.listdir(dataset_path)
+    #tmp = 200
+    for img_path in all_img_paths:
+        img = ut.load_img(dataset_path + '/' + img_path,
+                          target_size=image_size,
+                          )
+        #if tmp == 0:
+            #break
+        #tmp -= 1
+        x = preprocessing(img)
+        image_names.append(img_path)
+        image_list.append(x)
+    return image_names, image_list
 
-    img = image.load_img(img_path,
-                         target_size=image_size,
-                         )
-    x = preprocess_image(img)
+
+def feature_extracting(dataset_path,
+                       image_size=(224, 224),
+                       ) -> (list, list):
+    image_names, image_list = loading_images(dataset_path=dataset_path)
+    print(" > Loading Images is Done!")
     model = load_model(model_name='resnet50',
                        image_size=image_size,
                        n_classes=2,
                        )
+    print(" > Loading model is Done!")
 
-    predicted_y = model.predict(x)
-    predicted_y = np.reshape(predicted_y, predicted_y.shape[1])
-    img_vectors[img] = predicted_y
+    img_vectors = model.predict(np.vstack(image_list))
+    print(img_vectors.shape)
 
-
-def feature_extracting(dataset_path):
-    all_img_paths = os.listdir(dataset_path)
-    for img_path in all_img_paths:
-        feature_extracting_img(img_path=img_path)
-    # feature_extracting_img(query_path)
-    return img_vectors
-
+    return image_names, img_vectors
