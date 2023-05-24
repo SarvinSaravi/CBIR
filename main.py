@@ -1,5 +1,6 @@
 from feature_extraction import feature_extracting
 from similarity import load_similarity
+from crelu import load_crelu
 
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
@@ -13,6 +14,10 @@ def main():
     dataset_path = "Selected_dataset"
     img_names, img_vectors = feature_extracting(dataset_path)
     print(" > Making Feature Vectors is Done!")
+
+    new_vectors = load_crelu(img_vectors)
+    print(new_vectors.shape)
+
     measurement = load_similarity(similarity_name='cosine')
 
     # Show query
