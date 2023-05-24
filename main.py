@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 def main():
     threshold = 0.65
-    dataset_path = "Selected dataset"
+    dataset_path = "Selected_dataset"
     img_names, img_vectors = feature_extracting(dataset_path)
     print(" > Making Feature Vectors is Done!")
     measurement = load_similarity(similarity_name='cosine')
