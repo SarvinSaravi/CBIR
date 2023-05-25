@@ -1,6 +1,11 @@
 from .text import generate_text
 
-vector = [3, 2, 4, 5, 1]
-k = len(vector)
 
-generate_text(vector, k)
+def load_text_representation(permutation_vector, k, **kwargs):
+    """
+        Get text generation
+
+        the permutation vector must be a vector of Integers
+
+    """
+    return generate_text(permutation_vector, k)
