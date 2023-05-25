@@ -3,15 +3,15 @@ from similarity import load_similarity
 
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
-from sklearn.metrics.pairwise import cosine_similarity
+# from sklearn.metrics.pairwise import cosine_similarity
 
 
 def main():
     threshold = 0.65
-    dataset_path = "Flicker8k_Dataset"
+    dataset_path = "Selected_dataset"
     img_names, img_vectors = feature_extracting(dataset_path)
     print(" > Making Feature Vectors is Done!")
-    mesurement = load_similarity(similarity_name='cosine')
+    measurement = load_similarity(similarity_name='cosine')
 
     # Show query
     plt.figure()
@@ -20,10 +20,10 @@ def main():
     plt.show()
 
     for i in range(len(img_names)):
-        result = mesurement(img_vectors[1].reshape(1, -1),
+        result = measurement(img_vectors[1].reshape(1, -1),
                             img_vectors[i].reshape(1, -1),
                             )
-        #print(result)
+        # print(result)
         if result > threshold:
             img = mpimg.imread(dataset_path + '/' + img_names[i])
             img_plot = plt.imshow(img)
