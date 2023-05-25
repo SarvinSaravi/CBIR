@@ -1,7 +1,7 @@
 # import numpy as np
 
 
-def generate_text(vector, k, **kwargs):
+def generate_text(vector, k):
     text_vector = []
     for i in range(1, k + 1):
         v = vector[i - 1]
@@ -12,18 +12,40 @@ def generate_text(vector, k, **kwargs):
     text_vector.sort(key=len, reverse=True)
     text = ''.join(text_vector)
     print(text)
+    return text
 
 
 # GPT optimization but not true output!
-def generate_text_opt(vector, k, **kwargs):
+def generate_text_opt(vector, k):
     Ti = [f"T{i}" for i in range(1, k + 1)]
     text_vector = [Ti[i - 1] * (k + 1 - v) for i, v in enumerate(vector)]
     text_vector.sort(key=lambda x: vector[Ti.index(x)], reverse=True)
     text = ''.join(text_vector)
     print(text)
 
-# example for test
+
+def generate_txt_truncate(tr_vector, k):
+    text_vector = []
+    tr_vector = [x if x <= k else (k + 1) for x in tr_vector]
+    for i in range(1, len(tr_vector) + 1):
+        v = tr_vector[i - 1]
+        Ti = "T" + str(i)
+        rep = (k + 1) - v
+        text_vector.append(Ti * rep)
+
+    text_vector.sort(key=len, reverse=True)
+    text = ''.join(text_vector)
+    print(text)
+    return text
+
+
+# examples for test
 # vector = [3, 2, 4, 5, 1]
 # k = len(vector)
 # generate_text(vector, k)
 # output should be this: T5T5T5T5T5T2T2T2T2T1T1T1T3T3T4
+
+# vector = [4, 5, 6, 7, 3, 8, 2, 1, 9, 10]
+# k = 4
+# generate_txt_truncate(vector, k)
+# output should be this: T8T8T8T8T7T7T7T5T5T1
