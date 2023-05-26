@@ -1,4 +1,4 @@
-from .text import generate_txt_truncate
+from .text import generate_text_opt
 
 
 def load_text_representation(permutation_vector, k, **kwargs):
@@ -8,4 +8,4 @@ def load_text_representation(permutation_vector, k, **kwargs):
         the permutation vector must be a vector of Integers
 
     """
-    return generate_txt_truncate(permutation_vector, k)
+    return generate_text_opt(permutation_vector, k)
