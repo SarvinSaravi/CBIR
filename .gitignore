@@ -4,3 +4,6 @@
 # VSCode
 .vscode
 /Selected_dataset/
+
+#pycharm
+__pycache__
