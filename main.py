@@ -10,8 +10,10 @@ import matplotlib.pyplot as plt
 
 
 def main():
-    threshold = 0.65
-    dataset_path = "Selected_dataset"
+    query = 9
+    threshold = 0.7
+    dataset_path = "dataloading/Selected dataset"
+    # dataset_path = "Flicker8k_Dataset"
     img_names, img_vectors = feature_extracting(dataset_path)
     print(" > Making Feature Vectors is Done!")
 
@@ -22,16 +24,18 @@ def main():
 
     # Show query
     plt.figure()
-    img = mpimg.imread(dataset_path + '/' + img_names[1])
+    img = mpimg.imread(dataset_path + '/' + img_names[query])
     img_plot = plt.imshow(img)
     plt.show()
 
     for i in range(len(img_names)):
-        result = measurement(img_vectors[1].reshape(1, -1),
-                             img_vectors[i].reshape(1, -1),
-                             )
+        result = mesurement(img_vectors[query].reshape(1, -1),
+                            img_vectors[i].reshape(1, -1),
+                            )
         # print(result)
+
         if result > threshold:
+            print(result)
             img = mpimg.imread(dataset_path + '/' + img_names[i])
             img_plot = plt.imshow(img)
             plt.show()
