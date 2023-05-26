@@ -1,8 +1,8 @@
 
 from keras.applications import ResNet101
 from keras import Sequential, Model
-from keras.layers import Dense, Input
-
+from keras.layers import Lambda, Input
+from keras.applications.resnet import preprocess_input
 
 class Resnet101:
     def __init__(self,
@@ -13,7 +13,6 @@ class Resnet101:
         self.n_classes = n_classes
 
     def get_model(self) -> Model:
-        data_input = Input(self.input_shape)
         model = ResNet101(#include_top=False,
                          input_shape=self.input_shape,
                          # pooling='avg',
@@ -21,10 +20,9 @@ class Resnet101:
                          )
 
         final_model = Sequential()
-        final_model.add(data_input)
+        final_model.add(Lambda(preprocess_input,
+                               input_shape=self.input_shape))
         final_model.add(model)
-
-
 
         # print(model.summary())
         return final_model
