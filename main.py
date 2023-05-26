@@ -1,9 +1,12 @@
 from feature_extraction import feature_extracting
 from similarity import load_similarity
+from crelu import load_crelu
 
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
-from sklearn.metrics.pairwise import cosine_similarity
+
+
+# from sklearn.metrics.pairwise import cosine_similarity
 
 
 def main():
@@ -13,7 +16,11 @@ def main():
     # dataset_path = "Flicker8k_Dataset"
     img_names, img_vectors = feature_extracting(dataset_path)
     print(" > Making Feature Vectors is Done!")
-    mesurement = load_similarity(similarity_name='cosine')
+
+    new_vectors = load_crelu(img_vectors)
+    print(new_vectors.shape)
+
+    measurement = load_similarity(similarity_name='cosine')
 
     # Show query
     plt.figure()
