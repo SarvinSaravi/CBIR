@@ -1,24 +1,49 @@
-from feature_extraction import feature_extracting
-from similarity import load_similarity
-from crelu import load_crelu
-
+import numpy as np
+from keras.applications.resnet import preprocess_input
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 
+import os
 
-# from sklearn.metrics.pairwise import cosine_similarity
+from dataloading.dataloading import loading_image_dataset
+from crelu import load_crelu
+from models import load_model
+from similarity import load_similarity
+
+
+def feature_extracting(dataset_path,
+                       image_size=(224, 224),
+                       ) -> (list, list):
+    images_dict = loading_image_dataset(dataset_path, image_size)
+    image_names = list(images_dict.keys())
+    image_list = list()
+    for img in images_dict.values():
+        img = preprocess_input(img)
+        image_list.append(img)
+
+    model = load_model(model_name='resnet50',
+                       image_size=image_size,
+                       n_classes=2,
+                       )
+    print(" > Loading model is Done!")
+
+    img_vectors = model.predict(np.vstack(image_list))
+    print(img_vectors.shape)
+
+    return image_names, img_vectors
 
 
 def main():
-    query = 9
+    query = 47
     threshold = 0.7
     dataset_path = "dataloading/Selected dataset"
-    # dataset_path = "Flicker8k_Dataset"
+
     img_names, img_vectors = feature_extracting(dataset_path)
     print(" > Making Feature Vectors is Done!")
 
-    new_vectors = load_crelu(img_vectors)
-    print(new_vectors.shape)
+    crelu_vectors = load_crelu(img_vectors)
+    print(crelu_vectors.shape)
+    print(" > Making CreLU Vectors is Done!")
 
     measurement = load_similarity(similarity_name='cosine')
 
@@ -29,9 +54,9 @@ def main():
     plt.show()
 
     for i in range(len(img_names)):
-        result = mesurement(img_vectors[query].reshape(1, -1),
-                            img_vectors[i].reshape(1, -1),
-                            )
+        result = measurement(crelu_vectors[query].reshape(1, -1),
+                             crelu_vectors[i].reshape(1, -1),
+                             )
         # print(result)
 
         if result > threshold:
