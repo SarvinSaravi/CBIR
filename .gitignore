@@ -4,3 +4,9 @@
 # VSCode
 .vscode
 /Selected_dataset/
+
+#pycharm
+__pycache__
+
+#weightes
+*.h5
