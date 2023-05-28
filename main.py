@@ -11,7 +11,6 @@ from similarity import load_similarity
 from crelu import load_crelu
 from permutation import load_permutations
 
-
 def feature_extracting(dataset_path,
                        image_size=(224, 224),
                        ) -> (list, list):
@@ -36,6 +35,7 @@ def feature_extracting(dataset_path,
 def main():
     query = 13
     threshold = 0.65
+    k = 400
     dataset_path = "dataloading/Selected dataset"
 
     img_names, img_vectors = feature_extracting(dataset_path)
