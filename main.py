@@ -1,16 +1,12 @@
 import numpy as np
-from keras.applications.resnet import preprocess_input
-import matplotlib.image as mpimg
-import matplotlib.pyplot as plt
 
-import os
 
 from dataloading.dataloading import loading_image_dataset
 from models import load_model
-from similarity import load_similarity
 from crelu import load_crelu
 from permutation import load_permutations
 from reports.search_via_query import search_via_query
+
 
 def feature_extracting(dataset_path,
                        image_size=(224, 224),
@@ -56,6 +52,7 @@ def main():
     permutation_vectors = np.apply_along_axis(load_permutations, axis=1, arr=crelu_vectors)
     print(permutation_vectors.shape)
     print(" > Making Deep Permutation Vectors is Done!")
+
 
 if __name__ == "__main__":
     main()

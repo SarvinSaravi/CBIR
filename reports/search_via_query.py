@@ -31,7 +31,7 @@ def search_via_query(query_path: str,
     similar_images = searching(query_vector=query_vector,
                                img_vectors=img_vectors,
                                threshold=threshold,
-                               similarity_func='cosine',
+                               similarity_func=similarity_func,
                                )
     show.show_image_from_path(query_path, "query")
     for idx in similar_images:
