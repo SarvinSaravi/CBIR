@@ -2,29 +2,23 @@ import numpy as np
 
 
 def generate_permutation(vector):
-    # sorted_indexes = np.array(np.argsort(-vector) + 1)
     sorted_indexes = np.argsort(-vector)
-    print(sorted_indexes)
+    # print(sorted_indexes)
 
-    new_list = [(v, i) for i, v in enumerate(sorted_indexes)]
-    print(new_list)
-    # new_list = new_list.sort()
-    # print(new_list)
+    lst = [0] * len(vector)
 
-    lst = [0] * len(new_list)
+    for i, v in enumerate(sorted_indexes):
+        lst[v] = i + 1
 
-    for i, v in new_list:
-        lst[i] = v
-
-    print(lst)
-    # new_array = np.array(new_list)
-
-    # print(np.linalg.inv(sorted_indexes))
-    # print(inverse)
+    # print(lst)
+    return lst
 
 
-vec = np.array([0.1, 0, 0, 0, 0.2, 0, 0.3, 0.4, 0, 0])
-generate_permutation(vec)
+# some examples to test
+# vec = np.array([1.23634, 6.23, 3.3333, 10.2, 5.800453, 1.236])
+# generate_permutation(vec)
+#  output should be this: [3, 1, 4, 2, 0, 5]    ===>     [5, 2, 4, 1, 3, 6]
 
-# [7 6 4 0 1 2 3 5 8 9]
-# output should be this: [3, 4, 5, 6, 2, 7, 1, 0, 8, 9]
+# vec = np.array([0.1, 0, 0, 0, 0.2, 0, 0.3, 0.4, 0, 0])
+# generate_permutation(vec)
+# output should be this: [7 6 4 0 1 2 3 5 8 9]  ====>    [4, 5, 6, 7, 3, 8, 2, 1, 9, 10]
