@@ -10,7 +10,7 @@ from models import load_model
 from similarity import load_similarity
 from crelu import load_crelu
 from permutation import load_permutations
-
+from reports.search_via_query import search_via_query
 
 def feature_extracting(dataset_path,
                        image_size=(224, 224),
@@ -34,13 +34,20 @@ def feature_extracting(dataset_path,
 
 
 def main():
-    query = 13
-    threshold = 0.65
+    query = 10
+    threshold = 0.80
     k = 400
     dataset_path = "dataloading/Selected dataset"
 
     img_names, img_vectors = feature_extracting(dataset_path)
     print(" > Making Feature Vectors is Done!")
+    images_path = [dataset_path + '/' + img_names[i] for i in range(len(img_names))]
+    search_via_query(query_path=dataset_path + '/' + img_names[query],
+                     images_path=images_path,
+                     query_vector=img_vectors[query],
+                     img_vectors=img_vectors,
+                     threshold=threshold,
+                     )
 
     crelu_vectors = load_crelu(img_vectors)
     print(crelu_vectors.shape)
@@ -49,27 +56,6 @@ def main():
     permutation_vectors = np.apply_along_axis(load_permutations, axis=1, arr=crelu_vectors)
     print(permutation_vectors.shape)
     print(" > Making Deep Permutation Vectors is Done!")
-
-    measurement = load_similarity(similarity_name='cosine')
-
-    # Show query
-    plt.figure()
-    img = mpimg.imread(dataset_path + '/' + img_names[query])
-    img_plot = plt.imshow(img)
-    plt.show()
-
-    for i in range(len(img_names)):
-        result = measurement(img_vectors[query].reshape(1, -1),
-                             img_vectors[i].reshape(1, -1),
-                             )
-
-        if result > threshold:
-            print(result)
-            img = mpimg.imread(dataset_path + '/' + img_names[i])
-            img_plot = plt.imshow(img)
-            plt.show()
-    print(" > Finding similar Images is Done!")
-
 
 if __name__ == "__main__":
     main()
