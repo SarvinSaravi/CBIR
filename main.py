@@ -6,9 +6,10 @@ import matplotlib.pyplot as plt
 import os
 
 from dataloading.dataloading import loading_image_dataset
-from crelu import load_crelu
 from models import load_model
 from similarity import load_similarity
+from crelu import load_crelu
+from permutation import load_permutations
 
 
 def feature_extracting(dataset_path,
@@ -35,6 +36,7 @@ def feature_extracting(dataset_path,
 def main():
     query = 13
     threshold = 0.65
+    k = 400
     dataset_path = "dataloading/Selected dataset"
 
     img_names, img_vectors = feature_extracting(dataset_path)
@@ -43,6 +45,10 @@ def main():
     crelu_vectors = load_crelu(img_vectors)
     print(crelu_vectors.shape)
     print(" > Making CreLU Vectors is Done!")
+
+    permutation_vectors = np.apply_along_axis(load_permutations, axis=1, arr=crelu_vectors)
+    print(permutation_vectors.shape)
+    print(" > Making Deep Permutation Vectors is Done!")
 
     measurement = load_similarity(similarity_name='cosine')
 
