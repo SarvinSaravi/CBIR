@@ -45,7 +45,7 @@ def main():
     print(crelu_vectors.shape)
     print(" > Making CreLU Vectors is Done!")
 
-    permutation_vectors = load_permutations(crelu_vectors)
+    permutation_vectors = np.apply_along_axis(load_permutations, axis=1, arr=crelu_vectors)
     print(permutation_vectors.shape)
     print(" > Making Deep Permutation Vectors is Done!")
 
