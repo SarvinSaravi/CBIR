@@ -11,6 +11,7 @@ from similarity import load_similarity
 from crelu import load_crelu
 from permutation import load_permutations
 
+
 def feature_extracting(dataset_path,
                        image_size=(224, 224),
                        ) -> (list, list):
