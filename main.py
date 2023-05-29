@@ -10,6 +10,7 @@ from models import load_model
 from similarity import load_similarity
 from crelu import load_crelu
 from permutation import load_permutations
+from text_representation import load_text_representation
 
 
 def feature_extracting(dataset_path,
@@ -36,7 +37,7 @@ def feature_extracting(dataset_path,
 def main():
     query = 13
     threshold = 0.65
-    k = 400
+    k_variable = 400
     dataset_path = "dataloading/Selected dataset"
 
     img_names, img_vectors = feature_extracting(dataset_path)
@@ -49,6 +50,10 @@ def main():
     permutation_vectors = np.apply_along_axis(load_permutations, axis=1, arr=crelu_vectors)
     print(permutation_vectors.shape)
     print(" > Making Deep Permutation Vectors is Done!")
+
+    text_strings = np.apply_along_axis(load_text_representation, axis=1, arr=permutation_vectors, k=k_variable)
+    print(text_strings.shape)
+    print(" > Making STR is Done!")
 
     measurement = load_similarity(similarity_name='cosine')
 
