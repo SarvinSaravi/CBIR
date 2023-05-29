@@ -1,6 +1,7 @@
 import numpy as np
 
 
+# Use this function when k=len(vector)
 def generate_text(vector, k):
     text_vector = []
     for i in range(1, k + 1):
@@ -15,20 +16,10 @@ def generate_text(vector, k):
     return text
 
 
-# GPT optimization - the main method should be used
-def generate_text_opt(vector, k):
-    Ti = [f"T{i}" for i in range(1, len(vector) + 1)]
-    vector = [x if x <= k else (k + 1) for x in vector]
-    text_vector = [Ti[i] * (k + 1 - v) for i, v in enumerate(vector)]
-    text_vector.sort(key=len, reverse=True)
-    text = ''.join(text_vector)
-    # print(text)
-    return text
-
-
+# Use this function along with the desired k for truncate string
 def generate_txt_truncate(tr_vector, k):
     text_vector = []
-    tr_vector = [x if x <= k else (k + 1) for x in tr_vector]
+    tr_vector = [x if x <= k else (k + 1) for x in tr_vector]  # apply k
     for i in range(1, len(tr_vector) + 1):
         v = tr_vector[i - 1]
         Ti = "T" + str(i)
@@ -40,6 +31,16 @@ def generate_txt_truncate(tr_vector, k):
     # print(text)
     return text
 
+
+# The main method should be used (Optimize version of previous function)
+def generate_text_opt(vector, k):
+    Ti = [f"T{i}" for i in range(1, len(vector) + 1)]
+    vector = [x if x <= k else (k + 1) for x in vector]   # apply k
+    text_vector = [Ti[i] * (k + 1 - v) for i, v in enumerate(vector)]
+    text_vector.sort(key=len, reverse=True)
+    text = ''.join(text_vector)
+    # print(text)
+    return text
 
 # examples for test
 # vector = [3, 2, 4, 5, 1]
@@ -55,13 +56,10 @@ def generate_txt_truncate(tr_vector, k):
 # vector = np.array([[5, 2, 4, 1, 7, 8, 3, 6, 9, 10],
 #                    [4, 5, 6, 7, 3, 8, 2, 1, 9, 10],
 #                    [7, 9, 6, 10, 4, 5, 3, 2, 8, 1]])
-# k = len(vector[0])
 # k = 9
-# for item in vector:
-#     print(generate_text_opt(item, k))
-# result = list(generate_text_opt(item, k) for item in vector)
-# print(result)
 # result = np.apply_along_axis(generate_text_opt, axis=1, arr=vector, k=k)
+# print(result)
+# result = list(generate_text_opt(item, k) for item in vector)
 # print(result)
 # for i, v in enumerate(result):
 #     print(i, v)
