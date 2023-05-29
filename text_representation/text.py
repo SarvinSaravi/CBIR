@@ -1,4 +1,4 @@
-# import numpy as np
+import numpy as np
 
 
 def generate_text(vector, k):
@@ -23,6 +23,7 @@ def generate_text_opt(vector, k):
     text_vector.sort(key=len, reverse=True)
     text = ''.join(text_vector)
     print(text)
+    return text
 
 
 def generate_txt_truncate(tr_vector, k):
@@ -46,7 +47,21 @@ def generate_txt_truncate(tr_vector, k):
 # generate_text_opt(vector, k)
 # output should be this: T5T5T5T5T5T2T2T2T2T1T1T1T3T3T4
 
-# vector = [4, 5, 6, 7, 3, 8, 2, 1, 9, 10]
+# vector = [7, 9, 6, 10, 4, 5, 3, 2, 8, 1]
 # k = 4
-# generate_text_opt(vector, k)
-# output should be this: T8T8T8T8T7T7T7T5T5T1
+# print(generate_text_opt(vector, k))
+# output should be this: T10T10T10T10T8T8T8T7T7T5
+
+vector = np.array([[5, 2, 4, 1, 7, 8, 3, 6, 9, 10],
+                   [4, 5, 6, 7, 3, 8, 2, 1, 9, 10],
+                   [7, 9, 6, 10, 4, 5, 3, 2, 8, 1]])
+# k = len(vector[0])
+k = 9
+# for item in vector:
+#     print(generate_text_opt(item, k))
+result = list(generate_text_opt(item, k) for item in vector)
+print(result)
+# result = np.apply_along_axis(generate_text_opt, axis=1, arr=vector, k=k)
+# print(result)
+# for i, v in enumerate(result):
+#     print(i, v)
