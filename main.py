@@ -1,24 +1,13 @@
 import numpy as np
 
-
 from dataloading.dataloading import loading_image_dataset
 from models import load_model
 from crelu import load_crelu
 from permutation import load_permutations
-from reports.search_via_query import *
-from similarity.bm25_similarity import bm25
-def generate_text(vector, k):
-    text_vector = []
-    for i in range(1, k + 1):
-        v = vector[i - 1]
-        Ti = "T" + str(i)
-        rep = (k + 1) - v
-        text_vector.append(Ti * rep)
+from reports.search_vectors_via_query import search_vectors_via_query
+from reports.search_texts_via_query import search_texts_via_query
+from text_representation import load_text_representation
 
-    text_vector.sort(key=len, reverse=True)
-    text = ''.join(text_vector)
-    # print(text)
-    return text
 
 def feature_extracting(dataset_path,
                        image_size=(224, 224),
@@ -43,19 +32,22 @@ def feature_extracting(dataset_path,
 
 def main():
     query = 10
-    threshold = 0.50
+    threshold = 0.6
     k = 400
     dataset_path = "dataloading/Selected dataset"
 
     img_names, img_vectors = feature_extracting(dataset_path)
     print(" > Making Feature Vectors is Done!")
+
     images_path = [dataset_path + '/' + img_names[i] for i in range(len(img_names))]
-    search_via_query(query_path=dataset_path + '/' + img_names[query],
-                     images_path=images_path,
-                     query_vector=img_vectors[query],
-                     img_vectors=img_vectors,
-                     threshold=threshold,
-                     )
+    # Validation Vectors
+    search_vectors_via_query(query_path=dataset_path + '/' + img_names[query],
+                             images_path=images_path,
+                             query_vector=img_vectors[query],
+                             img_vectors=img_vectors,
+                             threshold=threshold,
+                             similarity_func='cosine'
+                             )
 
     crelu_vectors = load_crelu(img_vectors)
     print(crelu_vectors.shape)
@@ -65,15 +57,18 @@ def main():
     print(permutation_vectors.shape)
     print(" > Making Deep Permutation Vectors is Done!")
 
-    text_vectors = list()
-    for vector in permutation_vectors:
-        text_vectors.append(generate_text(vector, k))
-    scores = bm25(text_vectors[query], text_vectors)
-    similar_images = compare_with_threshold(scores, threshold)
-    show_search_results(images_path[query],
-                        images_path,
-                        similar_images)
+    text_strings = list(load_text_representation(item, k) for item in permutation_vectors)
+    print(len(text_strings))
+    print(" > Making Surrogate Text Representation is Done!")
 
+    # Validation Text strings
+    search_texts_via_query(query_path=images_path[query],
+                           images_path=images_path,
+                           query_string=text_strings[query],
+                           text_strings=text_strings,
+                           threshold=threshold,
+                           similarity_func='bm25'
+                           )
 
 
 if __name__ == "__main__":
