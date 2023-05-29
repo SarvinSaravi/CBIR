@@ -10,7 +10,11 @@ def split_g_gram(string, g):
     return result
 
 
-def bm25(query, corpus, g=4):
+def bm25():
+    return cal_bm25
+
+
+def cal_bm25(query, corpus, g=4):
     corpus_tokens = list()
     for doc in corpus:
         corpus_tokens.append(split_g_gram(doc, g))
