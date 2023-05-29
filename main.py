@@ -37,7 +37,7 @@ def feature_extracting(dataset_path,
 def main():
     query = 13
     threshold = 0.65
-    k_variable = 400
+    k = 400
     dataset_path = "dataloading/Selected dataset"
 
     img_names, img_vectors = feature_extracting(dataset_path)
@@ -51,7 +51,7 @@ def main():
     print(permutation_vectors.shape)
     print(" > Making Deep Permutation Vectors is Done!")
 
-    text_strings = list(load_text_representation(item, k_variable) for item in permutation_vectors)
+    text_strings = list(load_text_representation(item, k) for item in permutation_vectors)
     print(len(text_strings))
     print(" > Making Surrogate Text Representation is Done!")
 
