@@ -51,9 +51,9 @@ def main():
     print(permutation_vectors.shape)
     print(" > Making Deep Permutation Vectors is Done!")
 
-    text_strings = np.apply_along_axis(load_text_representation, axis=1, arr=permutation_vectors, k=k_variable)
-    print(text_strings.shape)
-    print(" > Making STR is Done!")
+    text_strings = list(load_text_representation(item, k_variable) for item in permutation_vectors)
+    print(len(text_strings))
+    print(" > Making Surrogate Text Representation is Done!")
 
     measurement = load_similarity(similarity_name='cosine')
 
