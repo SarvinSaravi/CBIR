@@ -5,8 +5,20 @@ from dataloading.dataloading import loading_image_dataset
 from models import load_model
 from crelu import load_crelu
 from permutation import load_permutations
-from reports.search_via_query import search_via_query
+from reports.search_via_query import *
+from similarity.bm25_similarity import bm25
+def generate_text(vector, k):
+    text_vector = []
+    for i in range(1, k + 1):
+        v = vector[i - 1]
+        Ti = "T" + str(i)
+        rep = (k + 1) - v
+        text_vector.append(Ti * rep)
 
+    text_vector.sort(key=len, reverse=True)
+    text = ''.join(text_vector)
+    # print(text)
+    return text
 
 def feature_extracting(dataset_path,
                        image_size=(224, 224),
@@ -31,7 +43,7 @@ def feature_extracting(dataset_path,
 
 def main():
     query = 10
-    threshold = 0.80
+    threshold = 0.50
     k = 400
     dataset_path = "dataloading/Selected dataset"
 
@@ -52,6 +64,16 @@ def main():
     permutation_vectors = np.apply_along_axis(load_permutations, axis=1, arr=crelu_vectors)
     print(permutation_vectors.shape)
     print(" > Making Deep Permutation Vectors is Done!")
+
+    text_vectors = list()
+    for vector in permutation_vectors:
+        text_vectors.append(generate_text(vector, k))
+    scores = bm25(text_vectors[query], text_vectors)
+    similar_images = compare_with_threshold(scores, threshold)
+    show_search_results(images_path[query],
+                        images_path,
+                        similar_images)
+
 
 
 if __name__ == "__main__":
