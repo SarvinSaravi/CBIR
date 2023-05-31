@@ -36,7 +36,7 @@ def feature_extracting(dataset_path,
 
 def partitioning(base_vector, num_sec):
     """
-        return type of this function is a list and each element is a 2d numpy array
+        return type of this function is a list and each element is a 2d Numpy array
         (the same number of vectors in truncated dimensions)
     """
     print(" > Split array to partitions is Done!")
