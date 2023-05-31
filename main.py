@@ -1,12 +1,48 @@
 import numpy as np
+from keras.applications.resnet import preprocess_input
+import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
 
+import os
 
+from dataloading.dataloading import loading_image_dataset
 from models import load_model
+from similarity import load_similarity
 from crelu import load_crelu
 from permutation import load_permutations
 from reports.search_vectors_via_query import search_vectors_via_query
 from reports.search_texts_via_query import search_texts_via_query
 from text_representation import load_text_representation
+
+
+def feature_extracting(dataset_path,
+                       image_size=(224, 224),
+                       ) -> (list, list):
+    images_dict = loading_image_dataset(dataset_path,
+                                        image_size
+                                        )
+    image_names = list(images_dict.keys())
+    image_list = list(images_dict.values())
+
+    model = load_model(model_name='resnet101',
+                       image_size=image_size,
+                       n_classes=2,
+                       )
+    print(" > Loading model is Done!")
+
+    img_vectors = model.predict(np.vstack(image_list))
+    print(img_vectors.shape)
+
+    return image_names, img_vectors
+
+
+def partitioning(base_vector, num_sec):
+    """
+        return type of this function is a list and each element is a 2d numpy array
+        (the same number of vectors in truncated dimensions)
+    """
+    print(" > Split array to partitions is Done!")
+    return np.array_split(base_vector, num_sec, axis=1)
 
 
 def main():
