@@ -34,6 +34,15 @@ def feature_extracting(dataset_path,
     return image_names, img_vectors
 
 
+def partitioning(base_vector, num_sec):
+    """
+        return type of this function is a list and each element is a 2d numpy array
+        (the same number of vectors in truncated dimensions)
+    """
+    print(" > Split array to partitions is Done!")
+    return np.array_split(base_vector, num_sec, axis=1)
+
+
 def main():
     query = 13
     threshold = 0.65
