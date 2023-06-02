@@ -23,7 +23,7 @@ def cal_similarity(query_vector,
     for i in range(len(img_vectors)):
         scores.append(measurement(query_vector.reshape(1, -1),
                                   img_vectors[i].reshape(1, -1),
-                                  )
+                                  )[0][0]
                       )
     return scores
 
