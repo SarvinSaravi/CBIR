@@ -11,12 +11,12 @@ def vector2text_processing(base_vector, K):
 
         K is a parameter for truncate text representation
     """
-    permutation_vectors = np.apply_along_axis(generate_permutation(), axis=1, arr=base_vector)
-    print(permutation_vectors.shape)
-    print(" > Making Deep Permutation Vectors is Done!")
+    permutation_vectors = np.apply_along_axis(generate_permutation, axis=1, arr=base_vector)
+    # print(permutation_vectors.shape)
+    # print(" > Making Deep Permutation Vectors is Done!")
 
     texts = list(generate_text_opt(item, K) for item in permutation_vectors)
-    print(len(texts))
-    print(" > Making Surrogate Text Representation is Done!")
+    # print(len(texts))
+    # print(" > Making Surrogate Text Representation is Done!")
 
     return texts
