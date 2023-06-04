@@ -15,8 +15,8 @@ def vector2text_processing(base_vector, K):
     print(permutation_vectors.shape)
     print(" > Making Deep Permutation Vectors is Done!")
 
-    text_strings = list(generate_text_opt(item, K) for item in permutation_vectors)
-    print(len(text_strings))
+    texts = list(generate_text_opt(item, K) for item in permutation_vectors)
+    print(len(texts))
     print(" > Making Surrogate Text Representation is Done!")
 
-    return text_strings
+    return texts
