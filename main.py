@@ -50,7 +50,7 @@ def main():
     print(" > Making CreLU Vectors is Done!")
 
     """ *> string_list should be indexed in ElasticSearch """
-    string_list = vector2text_processing(crelu_vectors, k)
+    string_list = vector2text_processing(crelu_vectors, K)
     # print(len(string_list))
     # print(string_list[0])
 
