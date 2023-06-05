@@ -9,8 +9,10 @@ def search_texts_via_query(query_path,
                            threshold,
                            similarity_func,
                            ):
-    measurement = load_similarity(similarity_name=similarity_func)
-    scores = measurement(query_string, text_strings)
+    scores = list()
+    scores = similarity_check(query_string,
+                              text_strings,
+                              similarity_func)
     similar_images = compare_with_threshold(scores, threshold)
     show_search_results(query_path,
                         images_path,

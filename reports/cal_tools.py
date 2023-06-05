@@ -14,18 +14,13 @@ def compare_with_threshold(scores,
     return similar_images
 
 
-def cal_similarity(query_vector,
-                   img_vectors,
+def similarity_check(query_vector,
+                   vectors,
                    similarity_func: str,
                    ) -> list:
     measurement = load_similarity(similarity_name=similarity_func)
-    scores = list()
-    for i in range(len(img_vectors)):
-        scores.append(measurement(query_vector.reshape(1, -1),
-                                  img_vectors[i].reshape(1, -1),
-                                  )[0][0]
-                      )
-    return scores
+    return measurement(query_vector,
+                       vectors)
 
 
 def show_search_results(query_path: str,

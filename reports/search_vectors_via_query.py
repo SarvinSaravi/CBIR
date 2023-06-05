@@ -8,10 +8,11 @@ def search_vectors_via_query(query_path: str,
                              threshold,
                              similarity_func='cosine',
                              ):
-    scores = cal_similarity(query_vector=query_vector,
-                            img_vectors=img_vectors,
-                            similarity_func=similarity_func,
-                            )
+    scores = list()
+    scores = similarity_check(query_vector,
+                              img_vectors,
+                              similarity_func,
+                              )
     similar_images = compare_with_threshold(scores, threshold)
     show_search_results(query_path,
                         images_path,
