@@ -15,15 +15,48 @@ from reports.search_texts_via_query import search_texts_via_query
 from reports.image_viewer import test_visualize
 from reports.pairwise_comparison import compare_pairwise
 from text_representation import load_text_representation
+# from permutation import load_permutations
+# from text_representation import load_text_representation
+from permutation_text import vector2text_processing
+
+
+def feature_extracting(dataset_path,
+                       image_size=(224, 224),
+                       ) -> (list, list):
+    images_dict = loading_image_dataset(dataset_path,
+                                        image_size
+                                        )
+    image_names = list(images_dict.keys())
+    image_list = list(images_dict.values())
+
+    model = load_model(model_name='resnet101',
+                       image_size=image_size,
+                       n_classes=2,
+                       )
+    print(" > Loading model is Done!")
+
+    img_vectors = model.predict(np.vstack(image_list))
+    print(img_vectors.shape)
+
+    return image_names, img_vectors
 
 
 def partitioning(base_vector, num_sec):
     """
-        return type of this function is a list and each element is a 2d numpy array
+        return type of next function is a list and each element is a 2d Numpy array
         (the same number of vectors in truncated dimensions)
     """
+    partition_list = np.array_split(base_vector, num_sec, axis=1)
     print(" > Split array to partitions is Done!")
-    return np.array_split(base_vector, num_sec, axis=1)
+
+    string_list = []
+
+    for part in partition_list:
+        """ a list format """
+        text_strings = vector2text_processing(part, part_k)
+        string_list.append(text_strings)
+
+    return string_list
 
 
 def main():
@@ -63,15 +96,22 @@ def main():
     print(crelu_vectors.shape)
     print(" > Making CreLU Vectors is Done!")
 
-    # Making Permutation Vectors
-    permutation_vectors = np.apply_along_axis(load_permutations, axis=1, arr=crelu_vectors)
-    print(permutation_vectors.shape)
-    print(" > Making Deep Permutation Vectors is Done!")
+    """ *> string_list should be indexed in ElasticSearch """
+    string_list = vector2text_processing(crelu_vectors, k)
+    # print(len(string_list))
+    # print(string_list[0])
 
-    # Making Text Strings
-    text_strings = list(load_text_representation(item, k) for item in permutation_vectors)
-    print(len(text_strings))
-    print(" > Making Surrogate Text Representation is Done!")
+    """
+        Partitioning Process
+        *> part_k is a parameter same as k but for every part of partitions
+        *> num_sections is the number of partitions that vectors divided into
+        *> partition_string_list should be indexed in ElasticSearch
+    """
+    print(" > Process of partitioning!")
+    num_sections = 100  # that every part will be (50,40) OR (50,41)
+    partition_string_list = partitioning(crelu_vectors, num_sections, part_k=20)
+    # print(len(partition_string_list))
+    # print(partition_string_list[0])
 
     # Validation Text Strings
     # search_texts_via_query(query_path=images_path[query],
