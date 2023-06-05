@@ -35,3 +35,19 @@ def loading_image_dataset(dataset_path,
         image_list[img_name] = img
     print(" > Loading Images is Done!")
     return image_list
+
+
+def loading_from_npz(file_dir, file_name):
+    file_path=file_dir+"/"+file_name+".npz"
+    loaded_data = np.load('results.npz')
+    data = loaded_data['data']
+    hyperparams = loaded_data['hyperparams']
+    print(" > Loading data and hyperparams form", file_path,"is Done!")
+    return data, hyperparams
+
+
+def loading_from_csv(file_dir, file_name):
+    file_path = file_dir + "/" + file_name + ".csv"
+    data = np.genfromtxt(file_path, delimiter=',')
+    print(" > Loading data form", file_path, "is Done!")
+    return data
