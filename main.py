@@ -41,7 +41,7 @@ def feature_extracting(dataset_path,
     return image_names, img_vectors
 
 
-def partitioning(base_vector, num_sec):
+def partitioning(base_vector, num_sec, part_k=4):
     """
         return type of next function is a list and each element is a 2d Numpy array
         (the same number of vectors in truncated dimensions)
