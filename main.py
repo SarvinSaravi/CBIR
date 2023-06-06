@@ -8,6 +8,26 @@ from crelu import load_crelu
 from permutation_text import vector2text_processing
 
 
+def partitioning222(base_vector, length, part_k=4):
+
+    dimension = base_vector.shape[1]
+    num_sec = dimension // length + (dimension % length != 0)
+    num_padded_zero = num_sec * length - dimension
+    padded_vector = np.pad(base_vector, ((0, 0), (num_padded_zero, 0)), mode='constant')
+    partition_list = np.array_split(padded_vector, num_sec, axis=1)
+    print(" > Split array to partitions is Done!")
+    print(f" > The output is ( {len(partition_list)}, {partition_list[0].shape[0]}, {partition_list[0].shape[1]})")
+
+    string_list = []
+
+    for part in partition_list:
+        """ a list format """
+        text_strings = vector2text_processing(part, part_k)
+        string_list.append(text_strings)
+
+    return string_list
+
+
 def partitioning(base_vector, num_sec, part_k=4):
     """
         return type of next function is a list and each element is a 2d Numpy array
@@ -15,6 +35,7 @@ def partitioning(base_vector, num_sec, part_k=4):
     """
     partition_list = np.array_split(base_vector, num_sec, axis=1)
     print(" > Split array to partitions is Done!")
+    print(f" > The output is ( {len(partition_list)}, {partition_list[0].shape[0]}, {partition_list[0].shape[1]})")
 
     string_list = []
 
@@ -32,6 +53,8 @@ def main():
     threshold = 0.7
     K = 400  # text representation
     num_sections = 100  # that every part will be (50,40) OR (50,41)
+    # or L
+    L = 11
     dataset_path = "dataloading/Selected dataset"
     image_size = (224, 224)
 
@@ -61,7 +84,14 @@ def main():
         *> partition_string_list should be indexed in ElasticSearch
     """
     print(" > Process of partitioning!")
-    partition_string_list = partitioning(crelu_vectors, num_sections, part_k=20)
+    partition_string_list = partitioning(base_vector=crelu_vectors,
+                                         num_sec=num_sections,
+                                         part_k=20,
+                                         )
+    # partition_string_list = partitioning222(base_vector=crelu_vectors,
+    #                                         length=L,
+    #                                         part_k=20,
+    #                                         )
     print(len(partition_string_list))
     print(partition_string_list[0])
 
