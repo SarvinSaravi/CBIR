@@ -3,13 +3,11 @@ from reports.save_in_files import save_in_npz
 
 from models import load_model
 from crelu import load_crelu
-# from permutation import load_permutations
-# from text_representation import load_text_representation
 from permutation_text import vector2text_processing
+from dataloading import dataloading as dl
 
 
 def partitioning222(base_vector, length, part_k=4):
-
     dimension = base_vector.shape[1]
     num_sec = dimension // length + (dimension % length != 0)
     num_padded_zero = num_sec * length - dimension
@@ -74,7 +72,7 @@ def main():
 
     """ *> string_list should be indexed in ElasticSearch """
     string_list = vector2text_processing(crelu_vectors, K)
-    # print(len(string_list))
+    print("string list length: " + str(len(string_list)))
     # print(string_list[0])
 
     """
@@ -84,23 +82,26 @@ def main():
         *> partition_string_list should be indexed in ElasticSearch
     """
     print(" > Process of partitioning!")
-    partition_string_list = partitioning(base_vector=crelu_vectors,
-                                         num_sec=num_sections,
-                                         part_k=20,
-                                         )
-    # partition_string_list = partitioning222(base_vector=crelu_vectors,
-    #                                         length=L,
-    #                                         part_k=20,
-    #                                         )
+    # partition_string_list = partitioning(base_vector=crelu_vectors,
+    #                                      num_sec=num_sections,
+    #                                      part_k=20,
+    #                                      )
+    partition_string_list = partitioning222(base_vector=crelu_vectors,
+                                            length=L,
+                                            part_k=5,
+                                            )
     print(len(partition_string_list))
-    print(partition_string_list[0])
+    # print(partition_string_list[0])
 
     # Save output
     hyperparams = {'query': query, 'threshold': threshold, 'K': K, 'S': num_sections, 'image_size': image_size}
-    save_in_npz(data=img_vectors,
-                hyperparams=hyperparams,
-                file_name="S",
-                )
+    # save_in_npz(data=img_vectors,
+    #             hyperparams=hyperparams,
+    #             file_name="S",
+    #             )
+
+    d, p = dl.loading_from_npz(file_dir='results/npz', file_name='data_k400_S100')
+    print(d, p)
 
 
 if __name__ == "__main__":
