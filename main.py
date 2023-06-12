@@ -100,8 +100,8 @@ def main():
     #             file_name="S",
     #             )
 
-    d, p = dl.loading_from_npz(file_dir='results/npz', file_name='data_k400_S100')
-    print(d, p)
+    # d, p = dl.loading_from_npz(file_dir='results/npz', file_name='data_k400_S100')
+    # print(d, p)
 
 
 if __name__ == "__main__":
