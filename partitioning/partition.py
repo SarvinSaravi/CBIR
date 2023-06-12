@@ -10,7 +10,7 @@ def partitioning_by_number_segments(base_vector, num_sec, part_k=4):
     partition_list = np.array_split(base_vector, num_sec, axis=1)
     print(" > Split array to partitions is Done!")
     # print(f" > The output is ( {len(partition_list)}, {partition_list[0].shape[0]}, {partition_list[0].shape[1]})")
-    print(partition_list)
+    # print(partition_list)
 
     string_list = []
 
@@ -19,6 +19,7 @@ def partitioning_by_number_segments(base_vector, num_sec, part_k=4):
         text_strings = vector2text_processing(part, part_k)
         string_list.append(text_strings)
 
+    print(" > Creating text string for partitions is Done!")
     return string_list
 
 
