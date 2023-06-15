@@ -1,4 +1,4 @@
-import numpy as np
+# import numpy as np
 
 
 # Use this function when k=len(vector)
@@ -57,13 +57,13 @@ def sortByT(val):
 # print(generate_text_opt(vector, k))
 # output should be this: T10T10T10T10T8T8T8T7T7T5
 
-vector = np.array([[5, 2, 4, 1, 7, 8, 3, 6, 9, 10],
-                   [4, 5, 6, 7, 3, 8, 2, 1, 9, 10],
-                   [7, 9, 6, 10, 4, 5, 3, 2, 8, 1]])
-k = 3
+# vector = np.array([[5, 2, 4, 1, 7, 8, 3, 6, 9, 10],
+#                    [4, 5, 6, 7, 3, 8, 2, 1, 9, 10],
+#                    [7, 9, 6, 10, 4, 5, 3, 2, 8, 1]])
+# k = 3
 # result = np.apply_along_axis(generate_text_opt, axis=1, arr=vector, k=k)
 # print(result)
-result = list(generate_text_opt(item, k) for item in vector)
+# result = list(generate_text_opt(item, k) for item in vector)
 # print(result)
-for i, v in enumerate(result):
-    print(i, v)
+# for i, v in enumerate(result):
+#     print(i, v)
