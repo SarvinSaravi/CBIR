@@ -38,7 +38,7 @@ def generate_text_opt(vector, k):
     vector = [x if x <= k else (k + 1) for x in vector]   # apply k
     text_vector = [Ti[i] * (k + 1 - v) for i, v in enumerate(vector)]
     text_vector.sort(key=len, reverse=True)
-    text = ''.join(text_vector)
+    text = '.'.join(text_vector)
     # print(text)
     return text
 
