@@ -15,7 +15,7 @@ def main():
     # Initialize
     query = 10
     threshold = 0.7
-    K = 10  # text representation
+    K = 20  # text representation
     num_sections = 100  # that every part will be (50,40) OR (50,41)
     # or L
     L = 11
