@@ -9,40 +9,27 @@ index_name = 'test3'
 # refresh whole index
 es.indices.refresh(index=index_name)
 
-my_query = {
+query_string = 'T42T42T42T42T42 T32T32T32T32 T12T12T12 T95T95 T2'
+query_list = query_string.split(' ')
+
+c = len(query_list)
+data_list = []
+for pos in query_list:
+    temp = {
+        "match": {
+            "pos" + str(c): pos
+        }
+    }
+    data_list.append(temp)
+    c -= 1
+
+my_query2 = {
     "bool": {
-        "should": [
-            {
-                "match": {
-                    "pos5": "T4T4T4T4T4"
-                }
-            },
-            {
-                "match": {
-                    "pos4": "T2T2T2T2"
-                }
-            },
-            {
-                "match": {
-                    "pos3": "T12T12T12"
-                }
-            },
-            {
-                "match": {
-                    "pos2": "T5T5"
-                }
-            },
-            {
-                "match": {
-                    "pos1": "T2"
-                }
-            }
-        ],
-        "minimum_should_match": 1
+        "should": data_list, "minimum_should_match": 1
     }
 }
 
-resp = es.search(index=index_name, query=my_query)
+resp = es.search(index=index_name, query=my_query2)
 print("Got %d Hits:" % resp['hits']['total']['value'])
 for hit in resp['hits']['hits']:
     print("score of this result is %s" % hit["_score"])
