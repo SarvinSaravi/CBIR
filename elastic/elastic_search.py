@@ -12,16 +12,8 @@ es.indices.refresh(index=index_name)
 query_string = 'T42T42T42T42T42 T32T32T32T32 T12T12T12 T95T95 T2'
 query_list = query_string.split(' ')
 
-c = len(query_list)
-data_list = []
-for pos in query_list:
-    temp = {
-        "match": {
-            "pos" + str(c): pos
-        }
-    }
-    data_list.append(temp)
-    c -= 1
+data_list = [{"match": {"pos" + str(i): pos}} for i, pos in enumerate(reversed(query_list), start=1)]
+
 
 my_query2 = {
     "bool": {
