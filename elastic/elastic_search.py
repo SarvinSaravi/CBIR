@@ -10,7 +10,7 @@ def elastic_searching(focus_index, query_text):
     # refresh whole index
     es.indices.refresh(index=index_name)
 
-    query_string = query_text
+    query_string = query_text.rstrip()
     query_list = query_string.split(' ')
 
     data_list = [{"match": {"pos" + str(i): pos}} for i, pos in enumerate(reversed(query_list), start=1)]
