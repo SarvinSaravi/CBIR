@@ -6,6 +6,7 @@ from models import load_model
 from crelu import load_crelu
 from permutation_text import vector2text_processing
 from partitioning import partitioning_process
+from elastic import elastic_indexing, elastic_searching
 
 
 # from dataloading import dataloading as dl
@@ -15,7 +16,7 @@ def main():
     # Initialize
     query = 10
     threshold = 0.7
-    K = 20  # text representation
+    K = 400  # text representation
     num_sections = 100  # that every part will be (50,40) OR (50,41)
     # or L
     L = 11
@@ -58,14 +59,7 @@ def main():
     #             file_name="S",
     #             )
 
-    filename = 'results/csv/new_strings_K' + str(K) + '.csv'
-
-    with open(filename, mode='w') as file:
-        writer = csv.writer(file)
-        # for name, string in zip(img_names, string_list):
-        #     writer.writerow([name, string])
-        for string in string_list:
-            writer.writerow([string])
+    elastic_indexing(string_list, K, focus_index='data2', shard_number=5, replica_number=0)
 
 
 if __name__ == "__main__":
