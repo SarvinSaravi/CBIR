@@ -45,10 +45,11 @@ def elastic_indexing(data_list, k, focus_index, shard_number=2, replica_number=0
         es.index(index=index_name, id=tmp_id, document=data)
         tmp_id += 1
 
+
 # test-case
-# str_list = ['T4T4T4T4T4 T2T2T2T2 T7T7T7 T3T3 T1     ',
+# str_list = [
+#             'T4T4T4T4T4 T2T2T2T2 T7T7T7 T3T3 T1     ',
 #             'T8T8T8T8T8 T7T7T7T7 T5T5T5 T1T1 T2     ',
 #             'T10T10T10T10T10 T8T8T8T8 T7T7T7 T5T5 T6     '
 #             ]
-#
 # elastic_indexing(str_list, 5, 'test7')

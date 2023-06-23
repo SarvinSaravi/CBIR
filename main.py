@@ -60,6 +60,7 @@ def main():
     #             )
 
     elastic_indexing(string_list, K, focus_index='data2', shard_number=5, replica_number=0)
+    print(" > Indexing data in Elasticsearch is Done!")
 
 
 if __name__ == "__main__":
