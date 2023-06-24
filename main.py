@@ -1,6 +1,7 @@
 # import numpy as np
 # from reports.save_in_files import save_in_npz
 import csv
+import time
 
 from models import load_model
 from crelu import load_crelu
@@ -13,6 +14,12 @@ from elastic import elastic_indexing, elastic_searching
 
 
 def main():
+    start_time = time.time()
+
+    # Your Python code here
+
+
+
     # Initialize
     query = 10
     threshold = 0.7
@@ -61,6 +68,11 @@ def main():
 
     elastic_indexing(string_list, K, focus_index='data2', shard_number=5, replica_number=0)
     print(" > Indexing data in Elasticsearch is Done!")
+
+    end_time = time.time()
+    duration = end_time - start_time
+
+    print("The code took", duration, "seconds to execute.")
 
 
 if __name__ == "__main__":
