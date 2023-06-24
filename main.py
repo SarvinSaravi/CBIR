@@ -14,13 +14,8 @@ from elastic import elastic_indexing, elastic_searching
 
 
 def main():
-    start_time = time.time()
-
-    # Your Python code here
-
-
-
     # Initialize
+    start_time = time.time()
     query = 10
     threshold = 0.7
     K = 400  # text representation
