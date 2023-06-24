@@ -15,7 +15,7 @@ def main():
     # Initialize
     query = 10
     threshold = 0.7
-    K = 20  # text representation
+    K = 10  # text representation
     num_sections = 100  # that every part will be (50,40) OR (50,41)
     # or L
     L = 11
@@ -58,14 +58,15 @@ def main():
     #             file_name="S",
     #             )
 
-    filename = 'results/csv/new_strings_K' + str(K) + '.csv'
+    filename = 'results/csv/title_strings_K' + str(K) + '.csv'
+    # filename = 'results/csv/strings_K' + str(K) + '.csv'
 
     with open(filename, mode='w') as file:
         writer = csv.writer(file)
-        # for name, string in zip(img_names, string_list):
-        #     writer.writerow([name, string])
-        for string in string_list:
-            writer.writerow([string])
+        for name, string in zip(img_names, string_list):
+            writer.writerow([name, string])
+        # for string in string_list:
+        #     writer.writerow([string])
 
 
 if __name__ == "__main__":

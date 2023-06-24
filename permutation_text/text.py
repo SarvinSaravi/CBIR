@@ -40,7 +40,7 @@ def generate_text_opt(vector, k):
     text_vector.sort(key=sortByT, reverse=True)
     text = ' '.join(text_vector)
     # print(text)
-    return text
+    return text.rstrip()
 
 
 def sortByT(val):
