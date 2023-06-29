@@ -18,7 +18,7 @@ def main():
     start_time = time.time()
     query = 10
     threshold = 0.7
-    K = 400  # text representation
+    K = 42  # text representation
     num_sections = 100  # that every part will be (50,40) OR (50,41)
     # or L
     L = 11
@@ -61,7 +61,9 @@ def main():
     #             file_name="S",
     #             )
 
-    elastic_indexing_with_titles(img_names, string_list, K, focus_index='title_data', shard_number=3, replica_number=0)
+    elastic_indexing_with_titles(img_names, string_list, K, focus_index='m_title_data_k%s' % K,
+                                 shard_number=3,
+                                 replica_number=0)
     print(" > Indexing data in Elasticsearch is Done!")
 
     end_time = time.time()
