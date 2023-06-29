@@ -7,20 +7,15 @@ from models import load_model
 from crelu import load_crelu
 from permutation_text import vector2text_processing
 from partitioning import partitioning_process
-from elastic import elastic_indexing, elastic_searching
+from elastic import elastic_indexing_with_titles
 
 
 # from dataloading import dataloading as dl
 
 
 def main():
-    start_time = time.time()
-
-    # Your Python code here
-
-
-
     # Initialize
+    start_time = time.time()
     query = 10
     threshold = 0.7
     K = 10  # text representation
@@ -66,13 +61,15 @@ def main():
     #             file_name="S",
     #             )
 
-    elastic_indexing(string_list, K, focus_index='data2', shard_number=5, replica_number=0)
+    elastic_indexing_with_titles(img_names, string_list, K, focus_index='m_title_data_k%s' % K,
+                                 shard_number=3,
+                                 replica_number=0)
     print(" > Indexing data in Elasticsearch is Done!")
 
     end_time = time.time()
     duration = end_time - start_time
 
-    print("The code took", duration, "seconds to execute.")
+    print("The code took %s seconds to execute with K = %s" % (duration, K))
 
 
 if __name__ == "__main__":

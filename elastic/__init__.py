@@ -1,4 +1,4 @@
-from .elastic_index import elastic_indexing
+from .elastic_index import elastic_indexing_with_titles
 from .elastic_search import elastic_searching
 
 
