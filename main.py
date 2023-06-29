@@ -1,17 +1,25 @@
 # import numpy as np
 # from reports.save_in_files import save_in_npz
 import csv
+import time
 
 from models import load_model
 from crelu import load_crelu
 from permutation_text import vector2text_processing
 from partitioning import partitioning_process
+from elastic import elastic_indexing, elastic_searching
 
 
 # from dataloading import dataloading as dl
 
 
 def main():
+    start_time = time.time()
+
+    # Your Python code here
+
+
+
     # Initialize
     query = 10
     threshold = 0.7
@@ -58,15 +66,13 @@ def main():
     #             file_name="S",
     #             )
 
-    filename = 'results/csv/title_strings_K' + str(K) + '.csv'
-    # filename = 'results/csv/strings_K' + str(K) + '.csv'
+    elastic_indexing(string_list, K, focus_index='data2', shard_number=5, replica_number=0)
+    print(" > Indexing data in Elasticsearch is Done!")
 
-    with open(filename, mode='w') as file:
-        writer = csv.writer(file)
-        for name, string in zip(img_names, string_list):
-            writer.writerow([name, string])
-        # for string in string_list:
-        #     writer.writerow([string])
+    end_time = time.time()
+    duration = end_time - start_time
+
+    print("The code took", duration, "seconds to execute.")
 
 
 if __name__ == "__main__":
