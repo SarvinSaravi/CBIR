@@ -67,5 +67,5 @@ def elastic_search_by_image(focus_index, img_path):
 # print("The code took", duration, "seconds to execute.")
 
 
-path = 'dataloading/Selected dataset'
+path = 'dataloading/Selected dataset/103102.jpg'
 elastic_search_by_image('esm', path)
