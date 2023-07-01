@@ -80,7 +80,7 @@ def main():
 
     # save output
     filename = 'result_K%s.csv' % K
-    np.savetxt(filename, result, delimiter=',', fmt='%s')
+    np.savetxt("results/csv/" + filename, result, delimiter=',', fmt='%s')
     print(" > Searching in Elasticsearch is Done And Results saved in ", filename)
 
     # time measurement
