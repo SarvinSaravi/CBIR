@@ -5,6 +5,7 @@ import time
 from crelu import load_crelu
 from permutation_text import vector2text_processing
 from partitioning import partitioning_process
+from elastic import elastic_indexing_with_titles, elastic_search_by_vector
 
 def encode_features():
     K = 42
@@ -35,11 +36,19 @@ def encode_features():
     # partition_string_list = partitioning_process(crelu_vectors, part_k=5, length=L)
     # partition_string_list = partitioning_process(crelu_vectors, part_k=20, num_sec=num_sections)
 
-    # save output
+    # save output of encoded features
     file_name = "selected data_encoded_features"
     save_in_csv(data=(img_names, string_list),  # each colmun of .csv
                 file_name=file_name,
                 )
+
+    # save/index(string_list) into Elasticsearch
+    index_name = 'title_data_k%s' % K
+    elastic_indexing_with_titles(img_names, string_list, K, focus_index=index_name,
+                                 shard_number=1,
+                                 replica_number=0)
+    print(" > Indexing data in Elasticsearch is Done!")
+
     # time measurement
     end_time = time.time()
     duration = end_time - start_time
