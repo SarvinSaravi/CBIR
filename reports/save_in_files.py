@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import csv
 
 
 def save_in_npz(data,
@@ -21,7 +22,7 @@ def save_in_npz(data,
 
 
 def save_in_csv(data,
-                hyperparams: dict,
+                hyperparams = None,
                 file_dir="results/csv",
                 file_name="S",
                 ):
@@ -33,6 +34,8 @@ def save_in_csv(data,
     elif file_name == "L":
         file_name = f"data_K{hyperparams['K']}_l{hyperparams['L']}"
     file_path = file_dir + "/" + file_name + ".csv"
-    np.savetxt(file_path, data, delimiter=",")
+    with open(file_path, "w", newline="") as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerows(zip(*data))
     print("Saving to", file_path, "is done!")
     return
