@@ -1,6 +1,6 @@
 # Visual Search
 
- Dataset Link [Link](visual-search/dataloading)
+ Dataset Link [Link](dataloading/Selected dataset)
 
 
 `extract_features.py` 
