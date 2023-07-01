@@ -2,7 +2,7 @@ from elasticsearch import Elasticsearch
 import time
 
 from models import load_model
-from permutation_text import vector2text_processing
+from permutation_text import generate_permutation, generate_text_opt
 
 
 def elastic_search_by_text(focus_index, query_text):
@@ -25,18 +25,25 @@ def elastic_search_by_text(focus_index, query_text):
         }
     }
 
+    results_dict = {}
+
     resp = es.search(index=index_name, query=my_query)
-    print("Got %d Hits:" % resp['hits']['total']['value'])
+    # print("Got %d Hits:" % resp['hits']['total']['value'])
     for hit in resp['hits']['hits']:
-        print(("Picture ID: %s" % hit["_id"]))
-        print("score of this result is %s" % hit["_score"])
+        # print(("Picture ID: %s" % hit["_id"]))
+        # print("score of this result is %s" % hit["_score"])
         # print(hit["_source"]["title"])
-        print(hit["_source"])
-        print()
+        # print(hit["_source"])
+        hit_id = hit["_id"]
+        hit_score = hit["_score"]
+        results_dict[hit_id] = hit_score
+
+    return results_dict
 
 
-def elastic_search_by_vector(focus_index, vector):
-    surrogate_text = vector2text_processing(vector)
+def elastic_search_by_vector(focus_index, vector, param_k):
+    permutation_vector = generate_permutation(vector)
+    surrogate_text = generate_text_opt(permutation_vector, k=param_k)
     return elastic_search_by_text(focus_index, surrogate_text)
 
 
@@ -56,7 +63,6 @@ def elastic_search_by_image(focus_index, img_path):
 
     # elastic_search_by_vector(focus_index, img_vectors)
 
-
 # test-case for a data with K=10
 # start_time = time.time()
 # s = "T1661T1661T1661T1661T1661T1661T1661T1661T1661T1661 T1065T1065T1065T1065T1065T1065T1065T1065T1065 T1335T1335T1335T1335T1335T1335T1335T1335 T715T715T715T715T715T715T715 T1751T1751T1751T1751T1751T1751 T385T385T385T385T385 T869T869T869T869 T343T343T343 T508T508 T311"
@@ -67,5 +73,5 @@ def elastic_search_by_image(focus_index, img_path):
 # print("The code took", duration, "seconds to execute.")
 
 
-path = 'dataloading/Selected dataset/103102.jpg'
-elastic_search_by_image('esm', path)
+# path = 'dataloading/Selected dataset/103102.jpg'
+# elastic_search_by_image('esm', path)
