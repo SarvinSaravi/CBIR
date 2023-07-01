@@ -1,10 +1,7 @@
-import numpy as np
 import time
-from models import load_model
-from reports.save_in_files import save_in_csv
-from dataloading.dataloading import loading_from_csv
 
-# from dataloading import dataloading as dl
+from models import load_model
+from reports.save_in_files import save_in_npz
 
 
 def extract_features():
@@ -24,7 +21,7 @@ def extract_features():
 
     # save output
     file_name = dataset_name + "_features"
-    save_in_csv(data=(img_names, img_vectors),
+    save_in_npz(data=dict(zip(img_names, img_vectors)),
                 file_name=file_name,
                 )
     print(" > Making Feature Vectors is Done And Results saved in %s." % file_name)
@@ -38,4 +35,3 @@ def extract_features():
 
 if __name__ == "__main__":
     extract_features()
-

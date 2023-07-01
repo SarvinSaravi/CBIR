@@ -4,7 +4,7 @@ import csv
 
 
 def save_in_npz(data,
-                hyperparams: dict,
+                hyperparams=None,
                 file_dir="results/npz",
                 file_name="default",
                 ):
@@ -15,8 +15,12 @@ def save_in_npz(data,
         file_name = f"data_k{hyperparams['K']}_S{hyperparams['S']}"
     elif file_name == "L":
         file_name = f"data_k{hyperparams['K']}_l{hyperparams['L']}"
-    file_path = file_dir + "/" + file_name + ".npz"
-    np.savez(file_path, data=data, hyperparams=hyperparams)
+
+    file_path = file_dir + "/" + file_name
+    if not file_path.endswith(".npz"):
+        file_path = file_path + ".npz"
+
+    np.savez(file_path, **data)
     print("Saving to", file_path, "is done!")
     return
 

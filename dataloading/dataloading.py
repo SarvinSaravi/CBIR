@@ -37,13 +37,16 @@ def loading_image_dataset(dataset_path,
     return image_list
 
 
-def loading_from_npz(file_dir, file_name):
-    file_path=file_dir+"/"+file_name+".npz"
-    loaded_data = np.load('results.npz')
-    data = loaded_data['data']
-    hyperparams = loaded_data['hyperparams']
-    print(" > Loading data and hyperparams form", file_path,"is Done!")
-    return data, hyperparams
+def loading_from_npz(file_dir="results/npz",
+                     file_name="",
+                     ):
+    file_path=file_dir + "/" + file_name
+    if not file_path.endswith(".npz"):
+        file_path = file_path + ".npz"
+
+    data = np.load(file_path)
+    print(" > Loading data from", file_path,"is Done!")
+    return data
 
 
 def loading_from_csv(file_dir="results/csv",
