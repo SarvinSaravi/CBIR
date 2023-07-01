@@ -33,7 +33,9 @@ def save_in_csv(data,
         file_name = f"data_K{hyperparams['K']}_S{hyperparams['S']}"
     elif file_name == "L":
         file_name = f"data_K{hyperparams['K']}_l{hyperparams['L']}"
-    file_path = file_dir + "/" + file_name + ".csv"
+    file_path = file_dir + "/" + file_name
+    if not file_path.endswith(".csv"):
+        file_path = file_path + ".csv"
     with open(file_path, "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
         writer.writerows(zip(*data))

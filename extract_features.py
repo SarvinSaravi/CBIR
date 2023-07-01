@@ -2,7 +2,7 @@ import numpy as np
 import time
 from models import load_model
 from reports.save_in_files import save_in_csv
-
+from dataloading.dataloading import loading_from_csv
 
 # from dataloading import dataloading as dl
 
@@ -38,3 +38,4 @@ def extract_features():
 
 if __name__ == "__main__":
     extract_features()
+
