@@ -1,6 +1,6 @@
 import keras.utils as ut
 import numpy as np
-
+import csv
 import os
 
 """
@@ -37,17 +37,27 @@ def loading_image_dataset(dataset_path,
     return image_list
 
 
-def loading_from_npz(file_dir, file_name):
-    file_path=file_dir+"/"+file_name+".npz"
-    loaded_data = np.load('results.npz')
-    data = loaded_data['data']
-    hyperparams = loaded_data['hyperparams']
-    print(" > Loading data and hyperparams form", file_path,"is Done!")
-    return data, hyperparams
+def loading_from_npz(file_dir="results/npz",
+                     file_name="",
+                     ):
+    file_path=file_dir + "/" + file_name
+    if not file_path.endswith(".npz"):
+        file_path = file_path + ".npz"
+
+    data = np.load(file_path)
+    print(" > Loading data from", file_path,"is Done!")
+    return data
 
 
-def loading_from_csv(file_dir, file_name):
-    file_path = file_dir + "/" + file_name + ".csv"
-    data = np.genfromtxt(file_path, delimiter=',')
+def loading_from_csv(file_dir="results/csv",
+                     file_name="",
+                     ):
+    file_path = file_dir + "/" + file_name
+    if not file_path.endswith(".csv"):
+        file_path = file_path + ".csv"
+
+    with open(file_path, "r", newline="") as csvfile:
+        reader = csv.reader(csvfile)
+        data = list(reader)
     print(" > Loading data form", file_path, "is Done!")
     return data

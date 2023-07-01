@@ -1,9 +1,10 @@
 import numpy as np
 import os
+import csv
 
 
 def save_in_npz(data,
-                hyperparams: dict,
+                hyperparams=None,
                 file_dir="results/npz",
                 file_name="default",
                 ):
@@ -14,14 +15,18 @@ def save_in_npz(data,
         file_name = f"data_k{hyperparams['K']}_S{hyperparams['S']}"
     elif file_name == "L":
         file_name = f"data_k{hyperparams['K']}_l{hyperparams['L']}"
-    file_path = file_dir + "/" + file_name + ".npz"
-    np.savez(file_path, data=data, hyperparams=hyperparams)
+
+    file_path = file_dir + "/" + file_name
+    if not file_path.endswith(".npz"):
+        file_path = file_path + ".npz"
+
+    np.savez(file_path, **data)
     print("Saving to", file_path, "is done!")
     return
 
 
 def save_in_csv(data,
-                hyperparams: dict,
+                hyperparams = None,
                 file_dir="results/csv",
                 file_name="S",
                 ):
@@ -32,7 +37,11 @@ def save_in_csv(data,
         file_name = f"data_K{hyperparams['K']}_S{hyperparams['S']}"
     elif file_name == "L":
         file_name = f"data_K{hyperparams['K']}_l{hyperparams['L']}"
-    file_path = file_dir + "/" + file_name + ".csv"
-    np.savetxt(file_path, data, delimiter=",")
+    file_path = file_dir + "/" + file_name
+    if not file_path.endswith(".csv"):
+        file_path = file_path + ".csv"
+    with open(file_path, "w", newline="") as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerows(zip(*data))
     print("Saving to", file_path, "is done!")
     return
