@@ -4,11 +4,12 @@ from reports.save_in_files import save_in_csv
 import time
 from crelu import load_crelu
 from permutation_text import vector2text_processing
-from partitioning import partitioning_process
-from elastic import elastic_indexing_with_titles, elastic_search_by_vector
+# from partitioning import partitioning_process
+from elastic import elastic_indexing_with_titles
+
 
 def encode_features():
-    K = 42
+    K = 48
 
     start_time = time.time()
     # Loading features
@@ -24,7 +25,6 @@ def encode_features():
     string_list = vector2text_processing(crelu_vectors, K)
     print("| string list length | = " + str(len(string_list)))
 
-
     """
         Partitioning Process
         *> part_k is a parameter same as k but for every part of partitions
@@ -37,8 +37,8 @@ def encode_features():
     # partition_string_list = partitioning_process(crelu_vectors, part_k=20, num_sec=num_sections)
 
     # save output of encoded features
-    file_name = "selected data_encoded_features"
-    save_in_csv(data=(img_names, string_list),  # each colmun of .csv
+    file_name = "selected data_encoded_data_k%s" % K
+    save_in_csv(data=(img_names, string_list),  # each column of .csv
                 file_name=file_name,
                 )
 
@@ -53,7 +53,7 @@ def encode_features():
     end_time = time.time()
     duration = end_time - start_time
 
-    print("Encoding features took %s seconds" % duration)
+    print("Encoding and Indexing features took %s seconds" % duration)
     return
 
 
