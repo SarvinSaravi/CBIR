@@ -9,7 +9,7 @@ from elastic import elastic_indexing_with_titles
 
 
 def encode_features():
-    K = 48
+    K = 400
 
     start_time = time.time()
     # Loading features

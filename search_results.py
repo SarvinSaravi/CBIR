@@ -7,7 +7,7 @@ from elastic import elastic_search_by_vector
 
 def search_results():
     # Initialize
-    K = 48
+    K = 400
     index_name = 'title_data_k%s' % K
     # Loading features
     data = dict(loading_from_npz(file_name="Selected dataset_features.npz"))
