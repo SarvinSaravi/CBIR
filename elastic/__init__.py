@@ -1,4 +1,4 @@
-from .elastic_index import elastic_indexing_with_titles
+from .elastic_index import elastic_indexing_idea3
 from .elastic_search import elastic_search_by_text, elastic_search_by_vector
 
 

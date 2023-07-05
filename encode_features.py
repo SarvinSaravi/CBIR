@@ -5,11 +5,11 @@ import time
 from crelu import load_crelu
 from permutation_text import vector2text_processing
 # from partitioning import partitioning_process
-from elastic import elastic_indexing_with_titles
+from elastic import elastic_indexing_idea3
 
 
 def encode_features():
-    K = 400
+    K = 42
 
     start_time = time.time()
     # Loading features
@@ -44,9 +44,7 @@ def encode_features():
 
     # save/index(string_list) into Elasticsearch
     index_name = 'title_data_k%s' % K
-    elastic_indexing_with_titles(img_names, string_list, K, focus_index=index_name,
-                                 shard_number=1,
-                                 replica_number=0)
+    elastic_indexing_idea3(img_names, string_list, index_name)
     print(" > Indexing data in Elasticsearch is Done!")
 
     # time measurement
