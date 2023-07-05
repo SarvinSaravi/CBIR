@@ -2,12 +2,12 @@ import time
 import numpy as np
 
 from dataloading.dataloading import loading_from_npz
-from elastic import elastic_search_by_vector
+from elastic import elastic_search_idea3
 
 
 def search_results():
     # Initialize
-    K = 400
+    K = 42
     index_name = 'title_data_k%s' % K
     # Loading features
     data = dict(loading_from_npz(file_name="Selected dataset_features.npz"))
@@ -19,7 +19,7 @@ def search_results():
 
     for i in range(len(img_names)):
         query_vector = img_vectors[i]
-        search_answer = elastic_search_by_vector(index_name, query_vector, K)
+        search_answer = elastic_search_idea3(index_name, query_vector, K)
         for ans_id, ans_score in search_answer.items():
             ans_id = int(ans_id)
             result[i][ans_id - 1] = ans_score

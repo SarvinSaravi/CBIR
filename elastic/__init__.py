@@ -1,5 +1,5 @@
 from .elastic_index import elastic_indexing_idea3
-from .elastic_search import elastic_search_by_text, elastic_search_by_vector
+from .elastic_search import elastic_search_by_text, elastic_search_by_vector, elastic_search_idea3
 
 
 # def elastic_work(function, **kwargs):
