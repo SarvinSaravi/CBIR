@@ -3,6 +3,7 @@ import time
 
 from models import load_model
 from permutation_text import generate_permutation, generate_text_opt
+from crelu import crelu_transformation
 
 
 def elastic_search_by_text(focus_index, query_text):
@@ -42,7 +43,8 @@ def elastic_search_by_text(focus_index, query_text):
 
 
 def elastic_search_by_vector(focus_index, vector, param_k):
-    permutation_vector = generate_permutation(vector)
+    crelu_vector = crelu_transformation(vector)
+    permutation_vector = generate_permutation(crelu_vector)
     surrogate_text = generate_text_opt(permutation_vector, k=param_k)
     return elastic_search_by_text(focus_index, surrogate_text)
 
