@@ -1,1 +1,1 @@
-from .evaluation_functions import get_queries
+from .evaluation_functions import get_queries, result_assessment
