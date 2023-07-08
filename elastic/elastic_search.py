@@ -35,9 +35,9 @@ def elastic_search_by_text(focus_index, query_text):
         # print("score of this result is %s" % hit["_score"])
         # print(hit["_source"]["title"])
         # print(hit["_source"])
-        hit_id = hit["_id"]
+        hit_title = hit["_source"]["title"]
         hit_score = hit["_score"]
-        results_dict[hit_id] = hit_score
+        results_dict[hit_title] = hit_score
 
     return results_dict
 
@@ -45,7 +45,7 @@ def elastic_search_by_text(focus_index, query_text):
 def elastic_search_by_vector(focus_index, vector, param_k):
     crelu_vector = load_crelu(vector)
     surrogate_text = vector2text_processing(crelu_vector, param_k)
-    return elastic_search_by_text(focus_index, surrogate_text)
+    return elastic_search_by_text(focus_index, surrogate_text[0])
 
 
 def elastic_search_by_image(focus_index, img_path):
