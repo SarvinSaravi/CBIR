@@ -13,7 +13,7 @@ def encode_features():
 
     start_time = time.time()
     # Loading features
-    data = dict(loading_from_npz(file_name="Selected dataset_features.npz"))
+    data = dict(loading_from_npz(file_name="Main dataset_features.npz"))
     img_names, img_vectors = np.array(list(data.keys())), np.array(list(data.values()))
 
     # Making CReLU Vectors
@@ -37,15 +37,15 @@ def encode_features():
     # partition_string_list = partitioning_process(crelu_vectors, part_k=20, num_sec=num_sections)
 
     # save output of encoded features
-    file_name = "selected data_encoded_data_k%s" % K
+    file_name = "main data_encoded_data_k%s" % K
     save_in_csv(data=(img_names, string_list),  # each column of .csv
                 file_name=file_name,
                 )
 
     # save/index(string_list) into Elasticsearch
-    index_name = 'title_data_k%s' % K
+    index_name = 'm_title_data_k%s' % K
     elastic_indexing_with_titles(img_names, string_list, K, focus_index=index_name,
-                                 shard_number=1,
+                                 shard_number=3,
                                  replica_number=0)
     print(" > Indexing data in Elasticsearch is Done!")
 

@@ -1,17 +1,14 @@
 import time
 import numpy as np
-import os
 
 from dataloading.dataloading import loading_from_npz
 from elastic import elastic_search_by_vector
 from evaluation.evaluation_functions import get_queries, result_assessment
 
-# os.chdir("D:\\Python\\visual_search\\visual-search")
-
 
 def search_results():
     # Initialize
-    K = 42
+    K = 400
     index_name = 'm_title_data_k%s' % K
     # Loading features
     data = dict(loading_from_npz(file_name="Main dataset_features.npz"))
