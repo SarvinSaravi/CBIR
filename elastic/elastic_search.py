@@ -29,12 +29,8 @@ def elastic_search_by_text(focus_index, query_text):
     results_dict = {}
 
     resp = es.search(index=index_name, query=my_query)
-    # print("Got %d Hits:" % resp['hits']['total']['value'])
+
     for hit in resp['hits']['hits']:
-        # print(("Picture ID: %s" % hit["_id"]))
-        # print("score of this result is %s" % hit["_score"])
-        # print(hit["_source"]["title"])
-        # print(hit["_source"])
         hit_title = hit["_source"]["title"]
         hit_score = hit["_score"]
         results_dict[hit_title] = hit_score
@@ -48,21 +44,7 @@ def elastic_search_by_vector(focus_index, vector, param_k):
     return elastic_search_by_text(focus_index, surrogate_text[0])
 
 
-def elastic_search_by_image(focus_index, img_path):
-    dataset_path = img_path
-    image_size = (224, 224)
 
-    # Feature Extracting
-    model = load_model(model_name='resnet101',
-                       image_size=image_size,
-                       )
-    img_names, img_vectors = model.extract_feature_vectors(dataset_path=dataset_path,
-                                                           )
-    # images_path = [dataset_path + '/' + img_names[i] for i in range(len(img_names))]
-    print(" > Making Feature Vectors is Done!")
-    print()
-
-    # elastic_search_by_vector(focus_index, img_vectors)
 
 # test-case for a data with K=10
 # start_time = time.time()
