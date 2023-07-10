@@ -4,6 +4,7 @@ import numpy as np
 from dataloading.dataloading import loading_from_npz
 from elastic import elastic_search_by_vector
 from evaluation.evaluation_functions import get_queries, result_assessment
+from elastic import elastic_search_idea3
 
 
 def search_results():
@@ -42,6 +43,8 @@ def search_results():
     duration = end_time - start_time
 
     print("The code took %s seconds to execute with K = %s" % (duration, K))
+
+    print()
 
 
 if __name__ == '__main__':

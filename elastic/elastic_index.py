@@ -89,6 +89,41 @@ def elastic_indexing_with_titles(title_list, data_list, k, focus_index, shard_nu
         tmp_id += 1
 
 
+def elastic_indexing_idea3(title_list, data_list, focus_index, shard_number=2, replica_number=0):
+    # preparation mappings
+    str_lst = [st.rstrip() for st in data_list]
+
+    mappings = {
+        'properties': {
+            'title': {'type': 'keyword'},
+            'text_code': {'type': 'text'}
+        }
+    }
+
+    # Connect to 'http://localhost:9200'
+    es = Elasticsearch("http://localhost:9200")
+
+    # Define index name and settings/mappings
+    index_name = focus_index
+    settings = {
+        'number_of_shards': shard_number,
+        'number_of_replicas': replica_number
+    }
+
+    # Create index with defined settings/mappings
+    es.indices.create(index=index_name, mappings=mappings, settings=settings)
+
+    # inject data to index
+    tmp_id = 1
+    for text_code, title in zip(str_lst, title_list):
+        data = {
+            'title': title,
+            'text_code': text_code
+        }
+        es.index(index=index_name, id=str(tmp_id), document=data)
+        tmp_id += 1
+
+
 # test-cases
 # str_list = [
 #     'T4T4T4T4T4 T2T2T2T2 T7T7T7 T3T3 T1     ',
@@ -98,4 +133,4 @@ def elastic_indexing_with_titles(title_list, data_list, k, focus_index, shard_nu
 # elastic_indexing(str_list, 5, 'test7')
 #
 # t_list = ['img1.jpg', 'img2.jpg', 'img3.jpg']
-# elastic_indexing_with_titles(t_list, str_list, 5, 'test4')
+# elastic_indexing_idea3(t_list, str_list, 'test4idea3')
