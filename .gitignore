@@ -3,7 +3,7 @@
 
 # VSCode
 .vscode
-/Selected_dataset/
+/Main_dataset/
 
 #pycharm
 __pycache__
@@ -12,3 +12,4 @@ __pycache__
 *.h5
 /results/
 /evaluation/result*.dat
+/Main_dataset/
