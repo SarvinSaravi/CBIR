@@ -1,7 +1,6 @@
 from elasticsearch import Elasticsearch
 import time
 
-from models import load_model
 from permutation_text import generate_permutation, generate_text_opt, vector2text_processing
 from crelu import load_crelu
 
@@ -38,15 +37,24 @@ def elastic_search_by_text(focus_index, query_text):
     return results_dict
 
 
-def elastic_search_by_vector(focus_index, vector, param_k):
+def elastic_search_by_vector(focus_index, vector, param_k, indexing_method):
     crelu_vector = load_crelu(vector)
-    surrogate_text = vector2text_processing(crelu_vector, param_k)
-    return elastic_search_by_text(focus_index, surrogate_text[0])
+    if indexing_method == 'same_exact_phrase_with_separator':
+        surrogate_text = vector2text_processing(crelu_vector, param_k)
+        return elastic_search_idea3(focus_index, surrogate_text[0])
+    elif indexing_method == 'fuzzy_search':
+        print(' to do ')  # todo
+    elif indexing_method == 'remove_frequency':
+        print(' to do ')  # todo
+    elif indexing_method == 'prefix_search':
+        print(' to do ')  # todo
+    else:
+        print(" >>> Please clarify the indexing method <<< ")
+    return
 
 
-def elastic_search_idea3(focus_index, vector, param_k):
-    permutation_vector = generate_permutation(vector)
-    surrogate_text = generate_text_opt(permutation_vector, k=param_k)
+def elastic_search_idea3(focus_index, query_text):
+    query_string = query_text.rstrip()
 
     # Connect to 'http://localhost:9200'
     es = Elasticsearch("http://localhost:9200")
@@ -58,25 +66,19 @@ def elastic_search_idea3(focus_index, vector, param_k):
 
     my_query = {
         "match": {
-            "text_code": surrogate_text
+            "text_code": query_string
         }
     }
 
     results_dict = {}
 
     resp = es.search(index=index_name, query=my_query)
-    # print("Got %d Hits:" % resp['hits']['total']['value'])
     for hit in resp['hits']['hits']:
-        # print(("Picture ID: %s" % hit["_id"]))
-        # print("score of this result is %s" % hit["_score"])
-        # print(hit["_source"]["title"])
-        # print(hit["_source"])
-        hit_id = hit["_id"]
+        hit_title = hit["_source"]["title"]
         hit_score = hit["_score"]
-        results_dict[hit_id] = hit_score
+        results_dict[hit_title] = hit_score
 
     return results_dict
-
 
 # test-case for a data with K=10
 # start_time = time.time()
