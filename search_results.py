@@ -9,7 +9,7 @@ from elastic import elastic_search_idea3
 
 def search_results():
     # Initialize
-    K = 400
+    K = 42
     index_name = 'm_title_data_k%s' % K
     # Loading features
     data = dict(loading_from_npz(file_name="Main dataset_features.npz"))
@@ -28,7 +28,8 @@ def search_results():
             query_name_index = np.where(img_names == query)[0]
             query_vector = img_vectors[query_name_index]
             # search in elastic index (K is for vector to text transformation)
-            search_answer = elastic_search_by_vector(index_name, query_vector, K)
+            search_answer = elastic_search_by_vector(index_name, query_vector, K,
+                                                     indexing_method='same_exact_phrase_with_separator')
             result[query] = search_answer
 
     print(" > Searching in Elasticsearch is Done!")
