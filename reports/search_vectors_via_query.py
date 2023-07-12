@@ -26,8 +26,8 @@ def search_vectors_via_query(query_path: str,
     return
 
 
-query = 5
-threshold = 0.5
+query = 25
+threshold = 0.7
 dataset_path = "E:/PycharmProjects/visual-search/dataloading/Selected dataset"
 start_time = time.time()
 # Loading features

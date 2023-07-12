@@ -3,7 +3,7 @@ import tensorflow as tf
 
 
 class RMAC:
-    def __init__(self, shape, levels=3, power=None, overlap=0.4, norm_fm=False, sum_fm=True, verbose=False):
+    def __init__(self, shape, scales=3, power=None, overlap=0.4, norm_fm=True, sum_fm=True, verbose=False):
         self.shape = shape
         self.sum_fm = sum_fm
         self.norm = norm_fm
@@ -23,7 +23,7 @@ class RMAC:
             Hd = idx + 1
 
         self.regions = []
-        for l in range(levels):
+        for l in range(scales):
 
             wl = int(2 * w/(l+2))
             wl2 = int(wl / 2 - 1)

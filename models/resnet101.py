@@ -28,7 +28,13 @@ class Resnet101:
         if self.rmac:
             layer = "conv5_block3_out"
             base_out = base_model.get_layer(layer).output
-            rmac = RMAC(base_out.shape, levels=5, norm_fm=True, sum_fm=True)
+            rmac = RMAC(base_out.shape,
+                        scales=5,  # scales at which to generate pooling regions
+                        power= None,  # power exponent to apply (not used by default)
+                        norm_fm=True,  # normalize feature maps
+                        sum_fm=True,  # sum feature maps
+                        verbose=False,  # shows details about the regions used
+                        )
             rmac_layer = Lambda(rmac.rmac, input_shape=base_model.output_shape, name="rmac_" + layer)
             out = rmac_layer(base_out)
             # out = Dense(2048)(out) # fc to desired dimensionality
