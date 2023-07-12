@@ -9,7 +9,7 @@ from elastic import elastic_search_idea3
 
 def search_results():
     # Initialize
-    K = 42
+    K = 400
     index_name = 'm_title_data_k%s' % K
     # Loading features
     data = dict(loading_from_npz(file_name="Main dataset_features.npz"))
