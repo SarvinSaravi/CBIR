@@ -1,3 +1,7 @@
+
+import time
+import numpy as np
+from dataloading.dataloading import loading_from_npz
 from reports.cal_tools import *
 
 
@@ -20,3 +24,21 @@ def search_vectors_via_query(query_path: str,
                         )
     print(" > Finding similar Images via their vectors is Done!")
     return
+
+
+query = 5
+threshold = 0.5
+dataset_path = "E:/PycharmProjects/visual-search/dataloading/Selected dataset"
+start_time = time.time()
+# Loading features
+data = dict(loading_from_npz(file_dir="E:/PycharmProjects/visual-search/results/npz",
+                             file_name="Selected dataset_features.npz"))
+img_names, img_vectors = np.array(list(data.keys())), np.array(list(data.values()))
+images_path = [dataset_path + '/' + img_names[i] for i in range(len(img_names))]
+search_vectors_via_query(query_path=images_path[query],
+                         images_path=images_path,
+                         query_vector=img_vectors[query],
+                         img_vectors=img_vectors,
+                         threshold=threshold,
+                         similarity_func='cosine',
+                         )
