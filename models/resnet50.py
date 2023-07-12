@@ -9,10 +9,12 @@ from dataloading.dataloading import loading_image_dataset
 class Resnet50:
     def __init__(self,
                  image_size: tuple,
+                 rmac=False,
                  ):
         self.image_size = image_size
         self.input_shape = image_size + (3,)
         self.model = None
+        self.rmac = rmac
         return
 
     def get_model(self):
