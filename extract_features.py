@@ -14,6 +14,7 @@ def extract_features():
 
     model = load_model(model_name=model_name,
                        image_size=image_size,
+                       rmac=True,
                        )
     img_names, img_vectors = model.extract_feature_vectors(dataset_path=dataset_path,
                                                            )
