@@ -3,13 +3,13 @@ import numpy as np
 from reports.save_in_files import save_in_csv
 import time
 from crelu import load_crelu
-from permutation_text import vector2text_processing
+from permutation_text import vector2text_processing, vector2text_processing_with_splitter
 # from partitioning import partitioning_process
 from elastic import elastic_indexing
 
 
 def encode_features():
-    K = 400
+    K = 42
 
     start_time = time.time()
     # Loading features
@@ -22,7 +22,7 @@ def encode_features():
     print(" > Making CreLU Vectors is Done!")
 
     """ *> string_list should be indexed in ElasticSearch """
-    string_list = vector2text_processing(crelu_vectors, K)
+    string_list = vector2text_processing_with_splitter(crelu_vectors, K)
     print("| string list length | = " + str(len(string_list)))
 
     """
