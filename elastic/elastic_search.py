@@ -1,7 +1,7 @@
 from elasticsearch import Elasticsearch
-import time
+# import time
 
-from permutation_text import generate_permutation, generate_text_opt, vector2text_processing
+from permutation_text import vector2text_processing, vector2text_processing_with_splitter
 from crelu import load_crelu
 
 
@@ -40,7 +40,7 @@ def elastic_search_by_text(focus_index, query_text):
 def elastic_search_by_vector(focus_index, vector, param_k, indexing_method):
     crelu_vector = load_crelu(vector)
     if indexing_method == 'same_exact_phrase_with_separator':
-        surrogate_text = vector2text_processing(crelu_vector, param_k)
+        surrogate_text = vector2text_processing_with_splitter(crelu_vector, param_k)
         return elastic_search_idea3(focus_index, surrogate_text[0])
     elif indexing_method == 'fuzzy_search':
         print(' to do ')  # todo

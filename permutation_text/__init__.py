@@ -32,10 +32,10 @@ def vector2text_processing_with_splitter(base_vector, K):
     """
     permutation_vectors = np.apply_along_axis(generate_permutation, axis=1, arr=base_vector)
     # print(permutation_vectors.shape)
-    print(" > Making Deep Permutation Vectors is Done!")
+    # print(" > Making Deep Permutation Vectors is Done!")
 
     texts = list(generate_text_with_separator(item, K) for item in permutation_vectors)
     # print(len(texts))
-    print(" > Making Surrogate Text Representation with space splitter is Done!")
+    # print(" > Making Surrogate Text Representation with space splitter is Done!")
 
     return texts

@@ -4,12 +4,11 @@ import numpy as np
 from dataloading.dataloading import loading_from_npz
 from elastic import elastic_search_by_vector
 from evaluation.evaluation_functions import get_queries, result_assessment
-from elastic import elastic_search_idea3
 
 
 def search_results():
     # Initialize
-    K = 400
+    K = 42
     index_name = 'm_title_data_k%s' % K
     # Loading features
     data = dict(loading_from_npz(file_name="Main dataset_features.npz"))
