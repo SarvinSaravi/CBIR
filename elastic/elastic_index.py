@@ -5,7 +5,7 @@ def elastic_indexing(title_list, data_list, focus_index, indexing_method, shard_
     if indexing_method == 'same_exact_phrase_with_separator':
         return elastic_indexing_idea3(title_list, data_list, focus_index, shard_number, replica_number)
     elif indexing_method == 'fuzzy_search':
-        print(' to do ')  # todo
+        return elastic_indexing_idea3(title_list, data_list, focus_index, shard_number, replica_number)
     elif indexing_method == 'remove_frequency':
         print(' to do ')  # todo
     elif indexing_method == 'prefix_search':
