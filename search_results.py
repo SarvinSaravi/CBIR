@@ -28,7 +28,7 @@ def search_results():
             query_vector = img_vectors[query_name_index]
             # search in elastic index (K is for vector to text transformation)
             search_answer = elastic_search_by_vector(index_name, query_vector, K,
-                                                     indexing_method='same_exact_phrase_with_separator')
+                                                     indexing_method='fuzzy_search')
             result[query] = search_answer
 
     print(" > Searching in Elasticsearch is Done!")
