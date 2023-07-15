@@ -44,8 +44,8 @@ def encode_features():
 
     # save/index(string_list) into Elasticsearch
     index_name = 'm_title_data_k%s' % K
-    elastic_indexing(img_names, string_list, index_name, indexing_method='same_exact_phrase_with_separator')
-    print(" > Indexing data in Elasticsearch is Done!")
+    elastic_indexing(img_names, string_list, index_name, indexing_method='remove_frequency')
+    print(" > Indexing data in Elasticsearch with remove_frequency is Done!")
 
     # time measurement
     end_time = time.time()
