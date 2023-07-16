@@ -9,7 +9,9 @@ from elastic import elastic_indexing
 
 
 def encode_features():
+    # initiate
     K = 42
+    indexing_mechanism = 'prefix_search'
 
     start_time = time.time()
     # Loading features
@@ -23,6 +25,7 @@ def encode_features():
 
     """ *> string_list should be indexed in ElasticSearch """
     string_list = vector2text_processing_with_splitter(crelu_vectors, K)
+    print(" > Making Strings from vectors is Done!")
     print("| string list length | = " + str(len(string_list)))
 
     """
@@ -44,14 +47,15 @@ def encode_features():
 
     # save/index(string_list) into Elasticsearch
     index_name = 'm_title_data_k%s' % K
-    elastic_indexing(img_names, string_list, index_name, indexing_method='remove_frequency')
-    print(" > Indexing data in Elasticsearch with remove_frequency is Done!")
+    elastic_indexing(img_names, string_list, index_name, indexing_method=indexing_mechanism)
+    print(" > Indexing data in Elasticsearch with method %s is Done!" % indexing_mechanism)
+    print("| Elasticsearch Index Name | = " + index_name)
 
     # time measurement
     end_time = time.time()
     duration = end_time - start_time
 
-    print("Encoding and Indexing features took %s seconds" % duration)
+    print("Encoding and Indexing features took %s seconds to execute with K = %s" % (duration, K))
     return
 
 
