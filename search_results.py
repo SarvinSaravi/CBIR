@@ -8,7 +8,7 @@ from evaluation.evaluation_functions import get_queries, result_assessment
 
 def search_results():
     # Initialize
-    K = 400
+    K = 42
     index_name = 'm_title_data_k%s' % K
     searching_mechanism = 'prefix_search'
 

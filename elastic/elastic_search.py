@@ -181,7 +181,7 @@ def elastic_search_idea4(focus_index, query_text):
     data_list = [
         {
             "match": {
-                "prefix" + str(i+1): prefix
+                "prefix" + str(i+1) + ".disjoint": prefix
             }
         } for i, prefix in enumerate(match_list)
     ]
