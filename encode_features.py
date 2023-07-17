@@ -10,7 +10,7 @@ from elastic import elastic_indexing
 
 def encode_features():
     # initiate
-    K = 42
+    K = 400
     indexing_mechanism = 'prefix_search'
 
     start_time = time.time()
