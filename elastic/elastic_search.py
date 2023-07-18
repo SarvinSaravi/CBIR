@@ -104,7 +104,7 @@ def elastic_search_idea2(focus_index, query_text):
             "match": {
                 "text_code": {
                     "query": q,
-                    "fuzziness": "1"
+                    "fuzziness": "AUTO"
                 }
             }
         } for q in query_list

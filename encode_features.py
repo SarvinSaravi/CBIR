@@ -3,7 +3,7 @@ import numpy as np
 from reports.save_in_files import save_in_csv
 import time
 from crelu import load_crelu
-from permutation_text import vector2text_processing, vector2text_processing_with_splitter
+from permutation_text import vector2text_processing_with_splitter
 # from partitioning import partitioning_process
 from elastic import elastic_indexing
 
@@ -46,7 +46,8 @@ def encode_features():
                 )
 
     # save/index(string_list) into Elasticsearch
-    index_name = 'm_title_data_k%s' % K
+    # index_name = 'm_title_data_k%s' % K
+    index_name = indexing_mechanism + '_title_data_k%s' % K
     elastic_indexing(img_names, string_list, index_name, indexing_method=indexing_mechanism)
     print(" > Indexing data in Elasticsearch with method %s is Done!" % indexing_mechanism)
     print("| Elasticsearch Index Name | = " + index_name)

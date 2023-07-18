@@ -8,9 +8,10 @@ from evaluation.evaluation_functions import get_queries, result_assessment
 
 def search_results():
     # Initialize
-    K = 42
-    index_name = 'm_title_data_k%s' % K
+    K = 400
+    # index_name = 'm_title_data_k%s' % K
     searching_mechanism = 'prefix_search'
+    index_name = searching_mechanism + '_title_data_k%s' % K
 
     # Loading features
     data = dict(loading_from_npz(file_name="Main dataset_features.npz"))
