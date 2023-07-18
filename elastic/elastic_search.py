@@ -78,7 +78,6 @@ def elastic_search_idea3(focus_index, query_text):
 
 
 def elastic_search_idea2(focus_index, query_text):
-
     # Connect to 'http://localhost:9200'
     es = Elasticsearch("http://localhost:9200")
 
@@ -157,7 +156,7 @@ def elastic_search_idea1(focus_index, query_text):
     return results_dict
 
 
-def elastic_search_idea4(focus_index, query_text):
+def elastic_search_idea4_single_subfield(focus_index, query_text):
     # Connect to 'http://localhost:9200'
     es = Elasticsearch("http://localhost:9200")
 
@@ -178,10 +177,62 @@ def elastic_search_idea4(focus_index, query_text):
         code_text = code_text + query_list[i - 1] + ' '
         match_list.append(code_text)
 
+    # for search among text subfields
     data_list = [
         {
             "match": {
-                "prefix" + str(i+1) + ".disjoint": prefix
+                "prefix" + str(i + 1) + ".disjoint": prefix
+            }
+        } for i, prefix in enumerate(match_list)
+    ]
+
+    # for search among keyword subfields
+    # data_list = [{"match": {"prefix" + str(i + 1): prefix}} for i, prefix in enumerate(match_list)]
+
+    my_query = {
+        "bool": {
+            "should": data_list, "minimum_should_match": 1
+        }
+    }
+
+    results_dict = {}
+
+    resp = es.search(index=index_name, query=my_query)
+    for hit in resp['hits']['hits']:
+        hit_title = hit["_source"]["title"]
+        hit_score = hit["_score"]
+        results_dict[hit_title] = hit_score
+
+    return results_dict
+
+
+def elastic_search_idea4_multiple_fields(focus_index, query_text):
+    # Connect to 'http://localhost:9200'
+    es = Elasticsearch("http://localhost:9200")
+
+    index_name = focus_index
+
+    # refresh whole index
+    es.indices.refresh(index=index_name)
+
+    # prepare query text
+    query_string = remove_duplicates(query_text.rstrip())
+    query_list = query_string.split(' ')
+    K = query_string.count('T')
+
+    match_list = []
+
+    code_text = ''
+    for i in range(1, K + 1):
+        code_text = code_text + query_list[i - 1] + ' '
+        match_list.append(code_text)
+
+    # for search among text + keyword subfields
+    data_list = [
+        {
+            "multi_match": {
+                "query": prefix,
+                "fields": ["prefix" + str(i), "prefix" + str(i) + ".disjoint"]
             }
         } for i, prefix in enumerate(match_list)
     ]
@@ -220,11 +271,11 @@ def elastic_search_by_vector(focus_index, vector, param_k, indexing_method):
     elif indexing_method == 'prefix_search':
         surrogate_text = vector2text_processing_with_splitter(crelu_vector, param_k)
         # the query text that could be passed into function is like: 'T12 T12 T12 T3 T3 T4'
-        return elastic_search_idea4(focus_index, surrogate_text[0])
+        # return elastic_search_idea4_single_subfield(focus_index, surrogate_text[0])
+        return elastic_search_idea4_multiple_fields(focus_index, surrogate_text[0])
     else:
         print(" >>> Please clarify the indexing method <<< ")
     return
-
 
 # test-case for a data with K=10
 # start_time = time.time()
