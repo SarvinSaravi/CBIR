@@ -2,11 +2,11 @@ import numpy as np
 import tensorflow as tf
 import os
 from keras.applications import ResNet101
+from keras.utils import img_to_array
 from keras import Model
 from keras.applications.resnet import preprocess_input
 from dataloading.dataloading import loading_an_image
-import keras.utils as ut
-
+import cv2
 class RMAC:
     def __init__(self, scales: list(), levels=3, pca=True, device_id=0, verbose=False):
         self.scales=scales
@@ -30,6 +30,7 @@ class RMAC:
         return model
     
     def make_regions(self, shape):
+        # Authored by G. Tolias, 2015.
         overlap = 0.4
         steps = np.asarray([2, 3, 4, 5, 6, 7])
         B, H, W, D = shape
@@ -111,10 +112,47 @@ class RMAC:
     
     def PCAwhitening(self, x):
         # x = tf.subtract(x, self.mean)
-        x_whiten = tf.transpose(tf.matmul(self.whitening_matrix, x, transpose_b=True))
-        # x_whiten = tf.matmul(x,self.whitening_matrix)
+        # x_whiten = tf.transpose(tf.matmul(self.whitening_matrix, x, transpose_b=True))
+        x_whiten = tf.matmul(x,self.whitening_matrix)
 
         return x_whiten
+    
+    def PCAlearning_matlab(self, x):
+        print(" > PCA Learning is starting....")
+        
+        mean = tf.reduce_mean(x, axis=0) 
+        x = tf.subtract(x, mean) # (n_region * batch_size, )
+        if self.verbose:
+            print(" > Centered feature: ", x.shape)
+        with tf.device("/GPU:1"):
+            C = tf.matmul(x, x, transpose_a=True)/x.shape[0]
+        
+        eigenvalues, P = tf.linalg.eigh(C)
+        D = eigenvalues
+        # if self.verbose:
+            #  Compute the square root of the inverse of the eigenvalues
+            # print(" > Compute the square root of the inverse of the eigenvalues", tf.linalg.diag(tf.linalg.diag(D)), tf.linalg.diag(D))
+            
+        D_m12 = tf.linalg.diag(1.0 / tf.sqrt(D + 1E-9))
+       
+        if self.verbose:
+            #  Compute the square root of the inverse of the eigenvalues
+            print(" > Compute the square root of the inverse of the eigenvalues", D.shape)
+        # with tf.device("/GPU:1"):
+        #     PD = tf.matmul(P, D) 
+        #     PDP_t = tf.matmul(PD, P, transpose_b=True) # (2048, 2048)
+        
+        if self.verbose:
+        #     # compute the whitening mat
+        #     print(' > Covariance mat: ', covariance_matrix, PDP_t)
+            print(" > Check validation: ", D, tf.linalg.inv(tf.matmul(D_m12,D_m12)))
+        
+        with tf.device("/GPU:0"):
+            whitening_matrix = tf.matmul(D_m12, P, transpose_b=True) # (2048, 2048)
+
+        self.whitening_matrix = whitening_matrix
+        self.mean = mean
+        return whitening_matrix
     
     def postprocess(self,y):
         # (batch, n_region, 2048)
@@ -134,31 +172,43 @@ class RMAC:
         all_img_names = os.listdir(dataset_path)
         for img_name in all_img_names:
             image_path = dataset_path + '/' + img_name
-            img = loading_an_image(image_path)
-            img = img.resize((224, 224))
-            img = ut.img_to_array(img)
-            img = np.expand_dims(img, axis=0)
-            img = preprocess_input(img)
-            x = self.model.predict(img, verbose=False)  # (1, 7, 7, 2048)
-            r_features = []
-            for r in self.regions:
-                x_sliced = x[:, r[1]:r[3], r[0]:r[2], :]
-                x_maxed = tf.reduce_max(x_sliced, axis=(1,2))  # (2048, )
-                r_features.append(x_maxed)  # (n_regions, 2048)
+            origin = loading_an_image(image_path)
+            im_size_hw = np.array(origin.shape[0:2])
+            if self.verbose:
+                print(" > origin: ", im_size_hw)
+            sr_features = []
+            for s in self.scales:
+                img = origin
+                ratio = float(s) / np.max(im_size_hw)
+                new_size = tuple(np.round(im_size_hw * ratio).astype(np.int32))
+                if self.verbose:
+                    print(" > new_size: ", new_size)
+                img = cv2.resize(img, new_size)
+                img = img_to_array(img)
+                img = np.expand_dims(img, axis=0)
+                img = preprocess_input(img)
+                x = self.model.predict(img, verbose=False)  # (1, 7, 7, 2048)
+
+                for r in self.regions:
+                    x_sliced = x[:, r[1]:r[3], r[0]:r[2], :]
+                    x_maxed = tf.reduce_max(x_sliced, axis=(1,2))  # (2048, )
+                    sr_features.append(x_maxed)  # (n_regions, 2048)
         
-            y.append(r_features)  
+            y.append(sr_features)  
 
         # y = tf.convert_to_tensor(y) 
         y = tf.stack(y)
         y = tf.squeeze(y)
-        print(y.shape)
+        if self.verbose:
+                print("Regioned features: ", y.shape)
+
         if self.pca:
-            
             a, b, c = y.shape
             y = tf.reshape(y, (a*b, c)) 
             if self.verbose:
-                print("y_reshaped before pca: ", y.shape)
-            with tf.device("/GPU:1"):
+                print("Before pca: ", y.shape)
+
+            with tf.device("/GPU:0"):
                 self.PCAlearning(y)
         
                 y = tf.math.l2_normalize(y, axis=1)

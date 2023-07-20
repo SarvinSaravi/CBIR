@@ -9,7 +9,10 @@ def extract_features():
     start_time = time.time()
     dataset_name = "Main dataset"
     dataset_path = "dataloading/Main dataset"
-    image_size = (224, 224)
+    scales = [550, 800, 1050]
+    levels = 3
+    pca_whitening = True
+    verbose = False
     model_name = "resnet101"
 
     # model = load_model(model_name=model_name,
@@ -19,14 +22,13 @@ def extract_features():
     # img_names, img_vectors = model.extract_feature_vectors(dataset_path=dataset_path,
                                                         #   )
                                                         
-    rmac = RMAC(scales=[550, 800, 1050],
-                levels=3,
-                pca = True,
-                verbose= True
+    rmac = RMAC(scales=scales,
+                levels=levels,
+                pca = pca_whitening,
+                verbose= verbose
                 )
     
     img_names, img_vectors = rmac.extract_features(dataset_path=dataset_path)
-    
 
     # save output
     file_name = dataset_name + "_features"
@@ -36,7 +38,7 @@ def extract_features():
     print(" > Making Feature Vectors is Done And Results saved in %s." % file_name)
 
     # time measurement
-    end_time = time.time()
+    end_time = time.time
     duration = end_time - start_time
 
     print(" > The feature extracting took %s seconds." % duration)

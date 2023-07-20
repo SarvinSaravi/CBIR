@@ -2,6 +2,7 @@ import keras.utils as ut
 import numpy as np
 import csv
 import os
+import cv2 
 
 """
 Notes
@@ -14,8 +15,7 @@ __________
 def loading_an_image(img_path):
     """This function loads an image.
     """
-    img = ut.load_img(img_path,
-                      )
+    img = cv2.imread(img_path)
     return img
 
 
