@@ -4,13 +4,14 @@ import numpy as np
 from dataloading.dataloading import loading_from_npz
 from elastic import elastic_search_by_vector
 from evaluation.evaluation_functions import get_queries, result_assessment
-from elastic import elastic_search_idea3
 
 
 def search_results():
     # Initialize
-    K = 400
+    K = 42
     index_name = 'm_title_data_k%s' % K
+    searching_mechanism = 'prefix_search'
+
     # Loading features
     data = dict(loading_from_npz(file_name="Main dataset_features.npz"))
     img_names, img_vectors = np.array(list(data.keys())), np.array(list(data.values()))
@@ -19,6 +20,7 @@ def search_results():
 
     # start search by get queries from evaluation package
     query_list = get_queries()
+    print(" > Loading Queries is Done!")
     result = {}
 
     # main search flow
@@ -29,10 +31,10 @@ def search_results():
             query_vector = img_vectors[query_name_index]
             # search in elastic index (K is for vector to text transformation)
             search_answer = elastic_search_by_vector(index_name, query_vector, K,
-                                                     indexing_method='same_exact_phrase_with_separator')
+                                                     indexing_method=searching_mechanism)
             result[query] = search_answer
 
-    print(" > Searching in Elasticsearch is Done!")
+    print(" > Searching in Elasticsearch with method %s is Done!" % searching_mechanism)
 
     # save output and evaluate mAP
     filename = 'result_K%s.dat' % K

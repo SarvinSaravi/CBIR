@@ -7,8 +7,8 @@ from reports.save_in_files import save_in_npz
 def extract_features():
     # Start timing
     start_time = time.time()
-    dataset_name = "Selected dataset"
-    dataset_path = "dataloading/Selected dataset"
+    dataset_name = "Main dataset"
+    dataset_path = "Main_dataset"
     image_size = (224, 224)
     model_name = "resnet101"
 
