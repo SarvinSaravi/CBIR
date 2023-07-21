@@ -3,6 +3,7 @@ from keras import Sequential, Model
 from keras.layers import Lambda, Input
 from keras.applications.resnet import preprocess_input
 import numpy as np
+import keras.utils as ut
 
 from dataloading.dataloading import loading_image_dataset
 from models.rmac import RMAC
@@ -51,15 +52,25 @@ class Resnet101:
         self.model = model
         return self
 
+    @staticmethod
+    def preprocess_image(images):
+        x = list()
+        for img in images:
+            img = img.resize((224, 224))
+            img = ut.img_to_array(img)
+            img = np.expand_dims(img, axis=0)
+            x.append(img)
+        x = np.vstack(x)
+        x = preprocess_input(x)
+        return x
+
     def extract_feature_vectors(self,
                                 dataset_path):
         images_dict = loading_image_dataset(dataset_path,
-                                            self.image_size,
                                             )
         image_names = list(images_dict.keys())
         image_list = list(images_dict.values())
-        image_list = np.vstack(image_list)
-        image_list = preprocess_input(image_list)
+        image_list = self.preprocess_image(image_list)
         img_vectors = self.model.predict(image_list)
         print("> The feature vectors shape:", img_vectors.shape)
 

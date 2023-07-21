@@ -46,6 +46,16 @@ def generate_text_opt(vector, k):
 def sortByT(val):
     return val.count('T')
 
+
+def generate_text_with_separator(vector, k):
+    Ti = [f"T{i} " for i in range(1, len(vector) + 1)]  # different here than previous
+    vector = [x if x <= k else (k + 1) for x in vector]  # apply k
+    text_vector = [Ti[i] * (k + 1 - v) for i, v in enumerate(vector)]
+    text_vector.sort(key=sortByT, reverse=True)
+    text = ''.join(text_vector)
+    # print(text)
+    return text.rstrip()
+
 # examples for test
 # vector = [3, 2, 4, 5, 1]
 # k = len(vector)
@@ -63,7 +73,7 @@ def sortByT(val):
 # k = 3
 # result = np.apply_along_axis(generate_text_opt, axis=1, arr=vector, k=k)
 # print(result)
-# result = list(generate_text_opt(item, k) for item in vector)
+# result = list(generate_text_with_separator(item, k) for item in vector)
 # print(result)
 # for i, v in enumerate(result):
 #     print(i, v)
