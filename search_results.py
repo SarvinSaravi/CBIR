@@ -10,7 +10,7 @@ def search_results():
     # Initialize
     K = 400
     # index_name = 'm_title_data_k%s' % K
-    searching_mechanism = 'prefix_search'
+    searching_mechanism = 'fuzzy_search'
     index_name = searching_mechanism + '_title_data_k%s' % K
 
     # Loading features
@@ -38,7 +38,7 @@ def search_results():
     print(" > Searching in Elasticsearch with method %s is Done!" % searching_mechanism)
 
     # save output and evaluate mAP
-    filename = 'result_K%s.dat' % K
+    filename = searching_mechanism + '_result_K%s.dat' % K
     result_assessment(result, filename)
     print(" > Results Assessment done and file saved in ", filename)
 
