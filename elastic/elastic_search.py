@@ -1,8 +1,9 @@
 from elasticsearch import Elasticsearch
-# import time
 
 from permutation_text import vector2text_processing, vector2text_processing_with_splitter
 from crelu import load_crelu
+
+timeout_ms = 60000
 
 
 # this is a function that used inside of other main functions
@@ -19,7 +20,7 @@ def remove_duplicates(phrase):
 
 def elastic_search_by_text(focus_index, query_text):
     # Connect to 'http://localhost:9200'
-    es = Elasticsearch("http://localhost:9200")
+    es = Elasticsearch("http://localhost:9200", timeout=timeout_ms)
 
     index_name = focus_index
 
@@ -53,7 +54,7 @@ def elastic_search_idea3(focus_index, query_text):
     query_string = query_text.rstrip()
 
     # Connect to 'http://localhost:9200'
-    es = Elasticsearch("http://localhost:9200")
+    es = Elasticsearch("http://localhost:9200", timeout=timeout_ms)
 
     index_name = focus_index
 
@@ -74,12 +75,12 @@ def elastic_search_idea3(focus_index, query_text):
         hit_score = hit["_score"]
         results_dict[hit_title] = hit_score
 
-    return results_dict
+    return results_dict, resp["took"]
 
 
 def elastic_search_idea2(focus_index, query_text):
     # Connect to 'http://localhost:9200'
-    es = Elasticsearch("http://localhost:9200")
+    es = Elasticsearch("http://localhost:9200", timeout=timeout_ms)
 
     index_name = focus_index
 
@@ -124,12 +125,12 @@ def elastic_search_idea2(focus_index, query_text):
         hit_score = hit["_score"]
         results_dict[hit_title] = hit_score
 
-    return results_dict
+    return results_dict, resp["took"]
 
 
 def elastic_search_idea1(focus_index, query_text):
     # Connect to 'http://localhost:9200'
-    es = Elasticsearch("http://localhost:9200")
+    es = Elasticsearch("http://localhost:9200", timeout=timeout_ms)
 
     index_name = focus_index
 
@@ -153,12 +154,12 @@ def elastic_search_idea1(focus_index, query_text):
         hit_score = hit["_score"]
         results_dict[hit_title] = hit_score
 
-    return results_dict
+    return results_dict, resp["took"]
 
 
 def elastic_search_idea4_single_subfield(focus_index, query_text):
     # Connect to 'http://localhost:9200'
-    es = Elasticsearch("http://localhost:9200")
+    es = Elasticsearch("http://localhost:9200", timeout=timeout_ms)
 
     index_name = focus_index
 
@@ -203,12 +204,12 @@ def elastic_search_idea4_single_subfield(focus_index, query_text):
         hit_score = hit["_score"]
         results_dict[hit_title] = hit_score
 
-    return results_dict
+    return results_dict, resp["took"]
 
 
 def elastic_search_idea4_multiple_fields(focus_index, query_text):
     # Connect to 'http://localhost:9200'
-    es = Elasticsearch("http://localhost:9200")
+    es = Elasticsearch("http://localhost:9200", timeout=timeout_ms)
 
     index_name = focus_index
 
@@ -251,7 +252,7 @@ def elastic_search_idea4_multiple_fields(focus_index, query_text):
         hit_score = hit["_score"]
         results_dict[hit_title] = hit_score
 
-    return results_dict
+    return results_dict, resp["took"]
 
 
 def elastic_search_by_vector(focus_index, vector, param_k, indexing_method):
@@ -279,7 +280,7 @@ def elastic_search_by_vector(focus_index, vector, param_k, indexing_method):
 
 # test-case for a data with K=10
 # start_time = time.time()
-# s = "T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1879 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T1083 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T267 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1465 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1298 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T1000 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T15 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T703 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T1215 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T828 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T200 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T884 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T74 T90 T90 T90 T90 T90 T90 T90 T90 T90 T90 T90 T90 T90 T90 T90 T90 T90 T90 T90 T90 T90 T90 T90 T90 T90 T90 T90 T90 T90 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1348 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1440 T1106 T1106 T1106 T1106 T1106 T1106 T1106 T1106 T1106 T1106 T1106 T1106 T1106 T1106 T1106 T1106 T1106 T1106 T1106 T1106 T1106 T1106 T1106 T1106 T1106 T1106 T137 T137 T137 T137 T137 T137 T137 T137 T137 T137 T137 T137 T137 T137 T137 T137 T137 T137 T137 T137 T137 T137 T137 T137 T137 T383 T383 T383 T383 T383 T383 T383 T383 T383 T383 T383 T383 T383 T383 T383 T383 T383 T383 T383 T383 T383 T383 T383 T383 T731 T731 T731 T731 T731 T731 T731 T731 T731 T731 T731 T731 T731 T731 T731 T731 T731 T731 T731 T731 T731 T731 T731 T891 T891 T891 T891 T891 T891 T891 T891 T891 T891 T891 T891 T891 T891 T891 T891 T891 T891 T891 T891 T891 T891 T789 T789 T789 T789 T789 T789 T789 T789 T789 T789 T789 T789 T789 T789 T789 T789 T789 T789 T789 T789 T789 T616 T616 T616 T616 T616 T616 T616 T616 T616 T616 T616 T616 T616 T616 T616 T616 T616 T616 T616 T616 T1119 T1119 T1119 T1119 T1119 T1119 T1119 T1119 T1119 T1119 T1119 T1119 T1119 T1119 T1119 T1119 T1119 T1119 T1119 T1071 T1071 T1071 T1071 T1071 T1071 T1071 T1071 T1071 T1071 T1071 T1071 T1071 T1071 T1071 T1071 T1071 T1071 T1810 T1810 T1810 T1810 T1810 T1810 T1810 T1810 T1810 T1810 T1810 T1810 T1810 T1810 T1810 T1810 T1810 T2034 T2034 T2034 T2034 T2034 T2034 T2034 T2034 T2034 T2034 T2034 T2034 T2034 T2034 T2034 T2034 T1981 T1981 T1981 T1981 T1981 T1981 T1981 T1981 T1981 T1981 T1981 T1981 T1981 T1981 T1981 T1540 T1540 T1540 T1540 T1540 T1540 T1540 T1540 T1540 T1540 T1540 T1540 T1540 T1540 T17 T17 T17 T17 T17 T17 T17 T17 T17 T17 T17 T17 T17 T1327 T1327 T1327 T1327 T1327 T1327 T1327 T1327 T1327 T1327 T1327 T1327 T1064 T1064 T1064 T1064 T1064 T1064 T1064 T1064 T1064 T1064 T1064 T30 T30 T30 T30 T30 T30 T30 T30 T30 T30 T1694 T1694 T1694 T1694 T1694 T1694 T1694 T1694 T1694 T50 T50 T50 T50 T50 T50 T50 T50 T549 T549 T549 T549 T549 T549 T549 T10 T10 T10 T10 T10 T10 T783 T783 T783 T783 T783 T1547 T1547 T1547 T1547 T236 T236 T236 T595 T595 T696"
+# s = ""
 # f_index = 'm_title_data_k42'
 # res = elastic_search_idea4(f_index, s)
 # print(res)
