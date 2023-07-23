@@ -1,4 +1,5 @@
 from elasticsearch import Elasticsearch
+# from reports.save_in_files import save_in_csv
 
 
 # this is a function that used inside of other main functions
@@ -115,10 +116,7 @@ def elastic_indexing_idea1(title_list, data_list, focus_index, shard_number, rep
     es.indices.create(index=index_name, mappings=mappings, settings=settings)
 
     # prepare data for indexing
-    split_list = [st.rstrip() for st in data_list]
-    string_list = []
-    for string in split_list:
-        string_list.append(remove_duplicates(string))
+    string_list = [remove_duplicates(st.rstrip()) for st in data_list]
 
     # inject data to index
     tmp_id = 1
