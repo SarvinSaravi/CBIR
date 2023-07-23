@@ -1,6 +1,6 @@
 from dataloading.dataloading import loading_from_npz
 import numpy as np
-from reports.save_in_files import save_in_csv
+# from reports.save_in_files import save_in_csv
 import time
 from crelu import load_crelu
 from permutation_text import vector2text_processing_with_splitter
@@ -11,7 +11,7 @@ from elastic import elastic_indexing
 def encode_features():
     # initiate
     K = 400
-    indexing_mechanism = 'prefix_search'
+    indexing_mechanism = 'remove_frequency'
 
     start_time = time.time()
     # Loading features
@@ -40,10 +40,10 @@ def encode_features():
     # partition_string_list = partitioning_process(crelu_vectors, part_k=20, num_sec=num_sections)
 
     # save output of encoded features
-    file_name = "main data_encoded_data_k%s" % K
-    save_in_csv(data=(img_names, string_list),  # each column of .csv
-                file_name=file_name,
-                )
+    # file_name = "main data_encoded_data_k%s" % K
+    # save_in_csv(data=(img_names, string_list),  # each column of .csv
+    #             file_name=file_name,
+    #             )
 
     # save/index(string_list) into Elasticsearch
     # index_name = 'm_title_data_k%s' % K
