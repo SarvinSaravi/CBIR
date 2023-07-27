@@ -1,5 +1,8 @@
 from elasticsearch import Elasticsearch
+
 # from reports.save_in_files import save_in_csv
+
+timeout_ms = 60000
 
 
 # this is a function that used inside of other main functions
@@ -70,7 +73,7 @@ def elastic_indexing_idea3(title_list, data_list, focus_index, shard_number, rep
     }
 
     # Connect to 'http://localhost:9200'
-    es = Elasticsearch("http://localhost:9200")
+    es = Elasticsearch("http://localhost:9200", timeout=timeout_ms)
 
     # Define index name and settings/mappings
     index_name = focus_index
@@ -103,7 +106,7 @@ def elastic_indexing_idea1(title_list, data_list, focus_index, shard_number, rep
     }
 
     # Connect to 'http://localhost:9200'
-    es = Elasticsearch("http://localhost:9200")
+    es = Elasticsearch("http://localhost:9200", timeout=timeout_ms)
 
     # Define index name and settings/mappings
     index_name = focus_index
@@ -133,12 +136,15 @@ def elastic_indexing_idea4(title_list, data_list, focus_index, shard_number, rep
     # remove duplicates in all strings
     string_list = [remove_duplicates(st.rstrip()) for st in data_list]
     K = string_list[0].count('T')
+    prefix_step = 20
+    prefix_number = int(K / prefix_step) + 1 if (K % prefix_step != 0) else int(K / prefix_step)
 
     # preparation mappings
     data = {
         'title': {'type': 'keyword'}
     }
-    for i in range(1, K + 1):
+
+    for i in range(1, prefix_number + 1):
         key = 'prefix' + str(i)
         data[key] = {'type': 'keyword', 'fields': {'disjoint': {'type': 'text'}}}
 
@@ -147,7 +153,7 @@ def elastic_indexing_idea4(title_list, data_list, focus_index, shard_number, rep
     }
 
     # Connect to 'http://localhost:9200'
-    es = Elasticsearch("http://localhost:9200")
+    es = Elasticsearch("http://localhost:9200", timeout=timeout_ms)
 
     # Define index name and settings/mappings
     index_name = focus_index
@@ -164,12 +170,11 @@ def elastic_indexing_idea4(title_list, data_list, focus_index, shard_number, rep
     for text_code, title in zip(string_list, title_list):
         data['title'] = title
 
-        code_text = ''
-        split_code_text = text_code.split()
+        split_code_text = text_code.split(' ')
 
         for i, prefix in enumerate(data.keys()):
             if prefix != 'title':
-                code_text = code_text + split_code_text[i - 1] + ' '
+                code_text = ' '.join(split_code_text[0:prefix_step * i])
                 data[prefix] = code_text
 
         es.index(index=index_name, id=str(tmp_id), document=data)
@@ -194,12 +199,11 @@ def elastic_indexing(title_list, data_list, focus_index, indexing_method, shard_
         print(" >>> Please clarify the indexing method <<< ")
     return
 
-
 # test-cases
 # str_list = [
-#     'T4 T4 T4 T4 T4 T2 T2 T2 T2 T7 T7 T7 T3 T3 T1     ',
-#     'T8 T8 T8 T8 T8 T7 T7 T7 T7 T5 T5 T5 T1 T1 T2     ',
-#     'T10 T10 T10 T10 T10 T8 T8 T8 T8 T7 T7 T7 T5 T5 T6     '
+#     'T11 T11 T11 T11 T11 T11 T4 T4 T4 T4 T4 T2 T2 T2 T2 T7 T7 T7 T3 T3 T1     ',
+#     'T11 T11 T11 T11 T11 T11 T8 T8 T8 T8 T8 T7 T7 T7 T7 T5 T5 T5 T1 T1 T2     ',
+#     'T5 T5 T5 T5 T5 T5 T10 T10 T10 T10 T10 T8 T8 T8 T8 T7 T7 T7 T9 T9 T6     '
 # ]
 # t_list = ['img1.jpg', 'img2.jpg', 'img3.jpg']
 # elastic_indexing_idea4(t_list, str_list, 'test4idea1', shard_number=2, replica_number=0)
