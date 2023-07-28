@@ -138,6 +138,7 @@ def elastic_indexing_idea4(title_list, data_list, focus_index, shard_number, rep
     K = string_list[0].count('T')
     prefix_step = 20
     prefix_number = int(K / prefix_step) + 1 if (K % prefix_step != 0) else int(K / prefix_step)
+    print("| prefix step | = " + str(prefix_step))
 
     # preparation mappings
     data = {
