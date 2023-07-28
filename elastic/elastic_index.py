@@ -174,8 +174,7 @@ def elastic_indexing_idea4(title_list, data_list, focus_index, shard_number, rep
 
         for i, prefix in enumerate(data.keys()):
             if prefix != 'title':
-                code_text = ' '.join(split_code_text[0:prefix_step * i])
-                data[prefix] = code_text
+                data[prefix] = ' '.join(split_code_text[0:prefix_step * i])
 
         es.index(index=index_name, id=str(tmp_id), document=data)
         tmp_id += 1

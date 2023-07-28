@@ -171,12 +171,13 @@ def elastic_search_idea4_single_subfield(focus_index, query_text):
     query_list = query_string.split(' ')
     K = query_string.count('T')
 
+    prefix_step = 20
+    prefix_number = int(K / prefix_step) + 1 if (K % prefix_step != 0) else int(K / prefix_step)
+
     match_list = []
 
-    code_text = ''
-    for i in range(1, K + 1):
-        code_text = code_text + query_list[i - 1] + ' '
-        match_list.append(code_text)
+    for i in range(1, prefix_number + 1):
+        match_list.append(' '.join(query_list[0:prefix_step * i]))
 
     # for search among text subfields
     data_list = [
@@ -221,12 +222,13 @@ def elastic_search_idea4_multiple_fields(focus_index, query_text):
     query_list = query_string.split(' ')
     K = query_string.count('T')
 
+    prefix_step = 20
+    prefix_number = int(K / prefix_step) + 1 if (K % prefix_step != 0) else int(K / prefix_step)
+
     match_list = []
 
-    code_text = ''
-    for i in range(1, K + 1):
-        code_text = code_text + query_list[i - 1] + ' '
-        match_list.append(code_text)
+    for i in range(1, prefix_number + 1):
+        match_list.append(' '.join(query_list[0:prefix_step * i]))
 
     # for search among text + keyword subfields
     data_list = [
@@ -272,17 +274,17 @@ def elastic_search_by_vector(focus_index, vector, param_k, indexing_method):
     elif indexing_method == 'prefix_search':
         surrogate_text = vector2text_processing_with_splitter(crelu_vector, param_k)
         # the query text that could be passed into function is like: 'T12 T12 T12 T3 T3 T4'
-        # return elastic_search_idea4_single_subfield(focus_index, surrogate_text[0])
-        return elastic_search_idea4_multiple_fields(focus_index, surrogate_text[0])
+        return elastic_search_idea4_single_subfield(focus_index, surrogate_text[0])
+        # return elastic_search_idea4_multiple_fields(focus_index, surrogate_text[0])
     else:
         print(" >>> Please clarify the indexing method <<< ")
     return
 
 # test-case for a data with K=10
 # start_time = time.time()
-# s = ""
+# s = "T11 T11 T11 T11 T11 T11 T4 T4 T4 T4 T4 T2 T2 T2 T2 T7 T7 T7 T3 T3 T1     "
 # f_index = 'm_title_data_k42'
-# res = elastic_search_idea4(f_index, s)
+# res = elastic_search_idea4_single_subfield(f_index, s)
 # print(res)
 # end_time = time.time()
 # duration = end_time - start_time
