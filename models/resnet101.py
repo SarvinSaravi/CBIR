@@ -3,7 +3,6 @@ from keras import Sequential, Model
 from keras.layers import Lambda, Input
 from keras.applications.resnet import preprocess_input
 import numpy as np
-import keras.utils as ut
 
 from dataloading.dataloading import loading_image_dataset
 from models.rmac import RMAC
@@ -26,6 +25,7 @@ class Resnet101:
                                pooling='avg',
                                weights='weights/resnet101_weights_tf_dim_ordering_tf_kernels_notop.h5',
                                )
+        
         if self.rmac:
             layer = "conv5_block3_out"
             base_out = base_model.get_layer(layer).output
@@ -42,35 +42,22 @@ class Resnet101:
             model = Model(base_model.input, out)
             print(" > Creating Resnet101 model with RMAC layer is Done.")
         else:
-            model = Sequential()
-            model.add(Lambda(preprocess_input,
-                             input_shape=self.input_shape))
-            model.add(base_model)
+            model = base_model
             print(" > Creating Resnet101 model is Done.")
 
         # print(model.summary())
         self.model = model
         return self
 
-    @staticmethod
-    def preprocess_image(images):
-        x = list()
-        for img in images:
-            img = img.resize((224, 224))
-            img = ut.img_to_array(img)
-            img = np.expand_dims(img, axis=0)
-            x.append(img)
-        x = np.vstack(x)
-        x = preprocess_input(x)
-        return x
-
     def extract_feature_vectors(self,
                                 dataset_path):
         images_dict = loading_image_dataset(dataset_path,
+                                            self.image_size,
                                             )
         image_names = list(images_dict.keys())
         image_list = list(images_dict.values())
-        image_list = self.preprocess_image(image_list)
+        image_list = np.vstack(image_list)
+        image_list = preprocess_input(image_list)
         img_vectors = self.model.predict(image_list)
         print("> The feature vectors shape:", img_vectors.shape)
 
