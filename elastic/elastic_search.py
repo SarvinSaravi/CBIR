@@ -235,7 +235,7 @@ def elastic_search_idea4_multiple_fields(focus_index, query_text):
         {
             "multi_match": {
                 "query": prefix,
-                "fields": ["prefix" + str(i), "prefix" + str(i) + ".disjoint"]
+                "fields": ["prefix" + str(i + 1), "prefix" + str(i + 1) + ".disjoint"]
             }
         } for i, prefix in enumerate(match_list)
     ]
