@@ -12,3 +12,4 @@ __pycache__
 /results/
 /evaluation/result*.dat
 /data/
+visual-search.code-workspace
