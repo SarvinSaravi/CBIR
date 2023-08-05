@@ -1,8 +1,6 @@
 from .cosine_similarity import cosine
-from .bm25_similarity import bm25
 
 similarity_type = dict(cosine=cosine,
-                       bm25=bm25,
                        )
 
 
