@@ -8,8 +8,7 @@
 #pycharm
 __pycache__
 
-#weightes
-*.h5
+#Data
 /results/
 /evaluation/result*.dat
-/Main_dataset/
+/data/
