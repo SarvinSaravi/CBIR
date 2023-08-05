@@ -1,9 +1,10 @@
 # PhpStorm
 .idea
+.venv
 
 # VSCode
 .vscode
-/Main_dataset/
+
 
 #pycharm
 __pycache__
@@ -13,3 +14,4 @@ __pycache__
 /evaluation/result*.dat
 /data/
 visual-search.code-workspace
+/Main_dataset/
