@@ -23,7 +23,7 @@ class Resnet101:
         base_model = ResNet101(include_top=False,
                                input_shape=self.input_shape,
                                pooling='avg',
-                               weights='weights/resnet101_weights_tf_dim_ordering_tf_kernels_notop.h5',
+                               weights='data/weights/resnet101_weights_tf_dim_ordering_tf_kernels_notop.h5',
                                )
         
         if self.rmac:

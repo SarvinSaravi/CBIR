@@ -1,15 +1,17 @@
 # PhpStorm
 .idea
+.venv
 
 # VSCode
 .vscode
-/Main_dataset/
+
 
 #pycharm
 __pycache__
 
-#weightes
-*.h5
+#Data
 /results/
 /evaluation/result*.dat
+/data/
+visual-search.code-workspace
 /Main_dataset/
