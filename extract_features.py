@@ -9,7 +9,7 @@ def extract_features():
     start_time = time.time()
 
     dataset_name = "Main dataset"
-    dataset_path = "dataloading\Main dataset"
+    dataset_path = "data\\" + dataset_name
     rmac = True
     image_size = (224, 224)
     model_name = "resnet101"
