@@ -3,7 +3,7 @@ import time
 from models import load_model
 from reports.save_in_files import save_in_npz
 from dataloading.dataloading import loading_an_image
-
+from dataloading.dataset import prepare_dataset
 def extract_features_batch_vectors(img_paths,
                                    model,
                                    img_size,
@@ -23,19 +23,26 @@ def extract_features():
     start_time = time.time()
 
     # Initializing
-    dataset_name = "Main_dataset"
+    
+    # dataset_name can be "holidays", or "mirflickr1m"
+    dataset_name = "mirflickr1m"
+    batch_size = 10000
+    dataset_path = f"results/{dataset_name}"
+
+    model_name = "resnet101"
     rmac = False
     image_size = (224, 224)
-    model_name = "resnet101"
-    batch_size = 10000
-    dataset_path = "results/dataset"
+    
+    
+    
+    verbose = True # Debugging
 
 
-    # add list of image dataset to .txt
-        # in batch sizes
-    num_batches = prepare_dataset(dataset_name,
-                                  batch_size,
-                                  )
+
+    num_batch = prepare_dataset(dataset_name=dataset_name,
+                                batch_size=batch_size,
+                                verbose=verbose,
+                                )
 
     model = load_model(model_name=model_name,
                        image_size=image_size,
@@ -46,37 +53,38 @@ def extract_features():
 
     features_vectors = []
     img_names = []
-    for batch_index in range(num_batches):
-         
-        file_name = f"{dataset_name}_batch{batch_index}"
-        file_path = f"results/txt/{file_name}.txt"
+    for batch_index in range(num_batch):
+        file_path = f"results/{dataset_name}/batch{batch_index}.txt"
 
         with open(file_path, 'r') as file:
             img_batch_names = [line.strip() for line in file.readlines()]
-
+            file.close()
+        print("img_batch names :", len(img_batch_names))
         img_batch_paths = [f"{dataset_path}/{img_batch_names[i]}" for i in range(len(img_batch_names))]
-
+    
         features_batch_vectors = extract_features_batch_vectors(img_paths=img_batch_paths,
                                                                 model=model,
+                                                                img_size=image_size,
                                                                 )
         features_vectors.append(features_batch_vectors)
         
         # save features batch vectors
+        file_name = f"{dataset_name}_batch{batch_index}_features"
         save_in_npz(data=dict(zip(img_batch_names, features_batch_vectors)),
-                    file_name=f"{file_name}_features",
+                    file_name=file_name,
                     )
         print(f" > Making Feature Vectors for batch{batch_index} is Done!")
 
     # save all features vectors
-    save_in_npz(data=dict(zip(img_names, features_vectors)),
-                    file_name=f"{dataset_name}_features",
-                    )
+    # save_in_npz(data=dict(zip(img_names, features_vectors)),
+    #                 file_name=f"{dataset_name}_features",
+    #                 )
     # time measurement
     end_time = time.time()
     duration = end_time - start_time
 
     print(" > The feature extracting took %s seconds." % duration)
-
+    return num_batch
 
 if __name__ == "__main__":
     extract_features()
