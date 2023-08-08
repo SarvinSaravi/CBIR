@@ -4,6 +4,7 @@ from models import load_model
 from reports.save_in_files import save_in_npz
 from dataloading.dataloading import loading_an_image
 from dataloading.dataset import prepare_dataset
+
 def extract_features_batch_vectors(img_paths,
                                    model,
                                    img_size,
@@ -19,30 +20,34 @@ def extract_features_batch_vectors(img_paths,
     return batch_features
 
 def extract_features():
-    # Start timing
-    start_time = time.time()
-
-    # Initializing
     
-    # dataset_name can be "holidays", or "mirflickr1m"
-    dataset_name = "mirflickr1m"
-    batch_size = 10000
-    dataset_path = f"results/{dataset_name}"
+    # Initializing ----------------------------------------------------
+
+    # dataset_name can be "holidays", or "mirflickr1m", or "selected"
+    dataset_name = "selected"
+    batch_size = 50
+    chunk = True
+    dataset_folder = f"results/{dataset_name}"
 
     model_name = "resnet101"
     rmac = False
     image_size = (224, 224)
     
-    
-    
     verbose = True # Debugging
+    # -----------------------------------------------------------------
 
-
+    # Start timing
+    start_time = time.time()
 
     num_batch = prepare_dataset(dataset_name=dataset_name,
                                 batch_size=batch_size,
+                                chunk=chunk,
                                 verbose=verbose,
                                 )
+    
+    if verbose:
+        print(f"{dataset_name} dataset with batch size {batch_size}: ")
+        print(f"Number of batches: {num_batch}")
 
     model = load_model(model_name=model_name,
                        image_size=image_size,
@@ -54,13 +59,13 @@ def extract_features():
     features_vectors = []
     img_names = []
     for batch_index in range(num_batch):
-        file_path = f"results/{dataset_name}/batch{batch_index}.txt"
+        file_path = f"{dataset_folder}/batch{batch_index}.txt"
 
         with open(file_path, 'r') as file:
             img_batch_names = [line.strip() for line in file.readlines()]
             file.close()
         print("img_batch names :", len(img_batch_names))
-        img_batch_paths = [f"{dataset_path}/{img_batch_names[i]}" for i in range(len(img_batch_names))]
+        img_batch_paths = [f"{dataset_folder}/images/{img_batch_names[i]}" for i in range(len(img_batch_names))]
     
         features_batch_vectors = extract_features_batch_vectors(img_paths=img_batch_paths,
                                                                 model=model,
