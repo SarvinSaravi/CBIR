@@ -3,15 +3,19 @@ import numpy as np
 # from reports.save_in_files import save_in_csv
 import time
 from crelu import load_crelu
-from permutation_text import vector2text_processing_with_splitter
-# from partitioning import partitioning_process
+# from permutation_text import vector2text_processing_with_splitter
+from partitioning import partitioning_process
 from elastic import elastic_indexing
 
 
 def encode_features():
     # initiate
-    K = 42
-    indexing_mechanism = 'prefix_search'
+    # K = 42
+    indexing_mechanism = 'partitioning'
+
+    num_sections = 10
+    partition_K = 42
+    K = partition_K
 
     start_time = time.time()
     # Loading features
@@ -24,9 +28,9 @@ def encode_features():
     print(" > Making CreLU Vectors is Done!")
 
     """ *> string_list should be indexed in ElasticSearch """
-    string_list = vector2text_processing_with_splitter(crelu_vectors, K)
-    print(" > Making Strings from vectors is Done!")
-    print("| string list length | = " + str(len(string_list)))
+    # string_list = vector2text_processing_with_splitter(crelu_vectors, K)
+    # print(" > Making Strings from vectors is Done!")
+    # print("| string list length | = " + str(len(string_list)))
 
     """
         Partitioning Process
@@ -35,9 +39,10 @@ def encode_features():
         *> L is the Length of every partition that vectors divided into
         *> partition_string_list should be indexed in ElasticSearch
     """
-    # print(" > Process of partitioning!")
+    print(" > Process of partitioning!")
     # partition_string_list = partitioning_process(crelu_vectors, part_k=5, length=L)
-    # partition_string_list = partitioning_process(crelu_vectors, part_k=20, num_sec=num_sections)
+    partition_string_list = partitioning_process(crelu_vectors, part_k=partition_K, num_sec=num_sections)
+    print(len(partition_string_list))
 
     # save output of encoded features
     # file_name = "main data_encoded_data_k%s" % K
@@ -48,7 +53,7 @@ def encode_features():
     # save/index(string_list) into Elasticsearch
     # index_name = 'm_title_data_k%s' % K
     index_name = indexing_mechanism + '_title_data_k%s' % K
-    elastic_indexing(img_names, string_list, index_name, indexing_method=indexing_mechanism)
+    elastic_indexing(img_names, partition_string_list, index_name, indexing_method=indexing_mechanism)
     print(" > Indexing data in Elasticsearch with method %s is Done!" % indexing_mechanism)
     print("| Elasticsearch Index Name | = " + index_name)
 

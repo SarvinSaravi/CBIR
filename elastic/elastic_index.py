@@ -181,6 +181,43 @@ def elastic_indexing_idea4(title_list, data_list, focus_index, shard_number, rep
         tmp_id += 1
 
 
+def elastic_indexing_with_partitioning(title_list, partition_data_list, focus_index, shard_number, replica_number):
+    # preparation mappings
+    partition_count = len(partition_data_list)
+    img_count = len(partition_data_list[0])
+    data = {
+        'title': {'type': 'keyword'}
+    }
+    for i in range(1, partition_count + 1):
+        data['part' + str(i)] = {'type': 'text'}
+
+    mappings = {
+        'properties': data
+    }
+
+    # Connect to 'http://localhost:9200'
+    es = Elasticsearch("http://localhost:9200", timeout=timeout_ms)
+
+    # Define index name and settings/mappings
+    index_name = focus_index
+    settings = {
+        'number_of_shards': shard_number,
+        'number_of_replicas': replica_number
+    }
+
+    # Create index with defined settings/mappings
+    es.indices.create(index=index_name, mappings=mappings, settings=settings)
+
+    # inject data to index
+    for doc_index in range(img_count):
+        doc_strings = [part[doc_index] for part in partition_data_list]
+        data['title'] = title_list[doc_index]
+        for x, part_str in enumerate(doc_strings):
+            data['part' + str(x + 1)] = part_str
+
+        es.index(index=index_name, id=str(doc_index + 1), document=data)
+
+
 # the main function for redirecting to others
 def elastic_indexing(title_list, data_list, focus_index, indexing_method, shard_number=2, replica_number=0):
     if indexing_method == 'same_exact_phrase_with_separator':
@@ -195,9 +232,13 @@ def elastic_indexing(title_list, data_list, focus_index, indexing_method, shard_
     elif indexing_method == 'prefix_search':
         print(" > The method selected for indexing is : ", indexing_method)
         return elastic_indexing_idea4(title_list, data_list, focus_index, shard_number, replica_number)
+    elif indexing_method == 'partitioning':
+        print(" > The method selected for indexing is : ", indexing_method)
+        return elastic_indexing_with_partitioning(title_list, data_list, focus_index, shard_number, replica_number)
     else:
         print(" >>> Please clarify the indexing method <<< ")
     return
+
 
 # test-cases
 # str_list = [
@@ -207,3 +248,9 @@ def elastic_indexing(title_list, data_list, focus_index, indexing_method, shard_
 # ]
 # t_list = ['img1.jpg', 'img2.jpg', 'img3.jpg']
 # elastic_indexing_idea4(t_list, str_list, 'test4idea1', shard_number=2, replica_number=0)
+# part_list = [
+#     ['SSSS', 'TTTT', 'AA', 'QQQQ', 'ZZZ'],
+#     ['GGG', 'UUUUUUUUU', 'BBBB', 'KKKKKK', 'MMMM'],
+#     ['LLLL', 'TTTT', 'BBBB', 'KKKK', 'VV']
+# ]
+# elastic_indexing_with_partitioning(t_list, part_list, 'test4U', shard_number=1, replica_number=0)

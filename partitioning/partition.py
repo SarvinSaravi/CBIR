@@ -1,5 +1,5 @@
 import numpy as np
-from permutation_text import vector2text_processing
+from permutation_text import vector2text_processing_with_splitter
 
 
 def partitioning_by_number_segments(base_vector, num_sec, part_k=4):
@@ -16,7 +16,7 @@ def partitioning_by_number_segments(base_vector, num_sec, part_k=4):
 
     for part in partition_list:
         """ a list format """
-        text_strings = vector2text_processing(part, part_k)
+        text_strings = vector2text_processing_with_splitter(part, part_k)
         string_list.append(text_strings)
 
     print(" > Creating text string for partitions is Done!")
