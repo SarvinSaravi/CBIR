@@ -12,6 +12,7 @@ def extract_features_batch_vectors(img_paths,
     
     batch_features = []
     for img_path in img_paths:
+        print(img_path)
         x = loading_an_image(img_path=img_path, 
                              image_size=img_size,
                              )
@@ -24,9 +25,9 @@ def extract_features():
     # Initializing ----------------------------------------------------
 
     # dataset_name can be "holidays", or "mirflickr1m", or "selected"
-    dataset_name = "selected"
-    batch_size = 50
-    chunk = True
+    dataset_name = "mirflickr1m"
+    batch_size = 10000
+    chunk = False
     dataset_folder = f"results/{dataset_name}"
 
     model_name = "resnet101"
@@ -60,18 +61,19 @@ def extract_features():
     img_names = []
     for batch_index in range(num_batch):
         file_path = f"{dataset_folder}/batch{batch_index}.txt"
-
+        
         with open(file_path, 'r') as file:
             img_batch_names = [line.strip() for line in file.readlines()]
             file.close()
-        print("img_batch names :", len(img_batch_names))
+        if verbose:
+            print(f" > batch {batch_index}:\n > number of images : {len(img_batch_names)}")
         img_batch_paths = [f"{dataset_folder}/images/{img_batch_names[i]}" for i in range(len(img_batch_names))]
     
         features_batch_vectors = extract_features_batch_vectors(img_paths=img_batch_paths,
                                                                 model=model,
                                                                 img_size=image_size,
                                                                 )
-        features_vectors.append(features_batch_vectors)
+        # features_vectors.append(features_batch_vectors)
         
         # save features batch vectors
         file_name = f"{dataset_name}_batch{batch_index}_features"
