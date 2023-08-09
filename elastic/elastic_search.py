@@ -2,6 +2,7 @@ from elasticsearch import Elasticsearch
 
 from permutation_text import vector2text_processing, vector2text_processing_with_splitter
 from crelu import load_crelu
+from partitioning import partitioning_process
 
 timeout_ms = 60000
 
@@ -257,6 +258,35 @@ def elastic_search_idea4_multiple_fields(focus_index, query_text):
     return results_dict, resp["took"]
 
 
+def elastic_search_with_partitioning(focus_index, query_lst):
+    # Connect to 'http://localhost:9200'
+    es = Elasticsearch("http://localhost:9200", timeout=timeout_ms)
+
+    index_name = focus_index
+
+    # refresh whole index
+    es.indices.refresh(index=index_name)
+
+    data_list = [{"match": {"part" + str(i + 1): part_str[0]}} for i, part_str in enumerate(query_lst)]
+
+    my_query = {
+        "bool": {
+            "should": data_list, "minimum_should_match": 1
+        }
+    }
+
+    results_dict = {}
+
+    resp = es.search(index=index_name, query=my_query)
+    # print("Got %d Hits:" % resp['hits']['total']['value'])
+    for hit in resp['hits']['hits']:
+        hit_title = hit["_source"]["title"]
+        hit_score = hit["_score"]
+        results_dict[hit_title] = hit_score
+
+    return results_dict, resp["took"]
+
+
 def elastic_search_by_vector(focus_index, vector, param_k, indexing_method):
     crelu_vector = load_crelu(vector)
     if indexing_method == 'same_exact_phrase_with_separator':
@@ -276,6 +306,11 @@ def elastic_search_by_vector(focus_index, vector, param_k, indexing_method):
         # the query text that could be passed into function is like: 'T12 T12 T12 T3 T3 T4'
         return elastic_search_idea4_single_subfield(focus_index, surrogate_text[0])
         # return elastic_search_idea4_multiple_fields(focus_index, surrogate_text[0])
+    elif indexing_method == 'partitioning':
+        partition_string_lst = partitioning_process(crelu_vector, part_k=42, num_sec=10)
+        # surrogate_text = vector2text_processing_with_splitter(crelu_vector, param_k)
+        # the query text that could be passed into function is like: 'T12 T12 T12 T3 T3 T4'
+        return elastic_search_with_partitioning(focus_index, partition_string_lst)
     else:
         print(" >>> Please clarify the indexing method <<< ")
     return
