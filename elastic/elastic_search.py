@@ -307,8 +307,10 @@ def elastic_search_by_vector(focus_index, vector, param_k, indexing_method):
         return elastic_search_idea4_single_subfield(focus_index, surrogate_text[0])
         # return elastic_search_idea4_multiple_fields(focus_index, surrogate_text[0])
     elif indexing_method == 'partitioning':
-        partition_string_lst = partitioning_process(crelu_vector, part_k=42, num_sec=10)
-        # surrogate_text = vector2text_processing_with_splitter(crelu_vector, param_k)
+        # for keep frequency (*)
+        partition_string_lst = partitioning_process(crelu_vector, part_k=param_k, num_sec=10)
+        # for remove frequency (+)
+        partition_string_lst = [[remove_duplicates(part[0])] for part in partition_string_lst]
         # the query text that could be passed into function is like: 'T12 T12 T12 T3 T3 T4'
         return elastic_search_with_partitioning(focus_index, partition_string_lst)
     else:

@@ -42,7 +42,7 @@ def encode_features():
     print(" > Process of partitioning!")
     # partition_string_list = partitioning_process(crelu_vectors, part_k=5, length=L)
     partition_string_list = partitioning_process(crelu_vectors, part_k=partition_K, num_sec=num_sections)
-    print(len(partition_string_list))
+    print(" >  The partitioning procedure is complete and the number of partitions is : ", len(partition_string_list))
 
     # save output of encoded features
     # file_name = "main data_encoded_data_k%s" % K
