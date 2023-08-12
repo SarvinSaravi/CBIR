@@ -7,21 +7,21 @@ class Selected:
     def __init__(self,
                  dataset_folder="results/selected",
                  batch_size=50,
-                 archive_files=[f"data\selected\selected.zip"],
-                 chunk=False,
+                 archive_files=[f"data\selected\selected.zip"],  # source dataset files {.zip, .tar.gz}
+                 chunk=False, # True, if chunk the data based on batch_sizem False if all images in a single folder
                  verbose=False,
                  ) -> None:
         
-        self.dataset_name="selected"
-        self.dataset_folder=dataset_folder
-        self.dataset_path=f"{dataset_folder}/images"
+        self.dataset_name = "selected"
+        self.dataset_folder = dataset_folder
+        self.dataset_path = f"{dataset_folder}/images"
         self.dataset_size = 50
         self.batch_size = batch_size
         self.archive_files = archive_files
-        self.chunk=chunk
+        self.chunk = chunk
         self.verbose = verbose
 
-        self.num_batches=self.dataset_size // batch_size + (self.dataset_size % batch_size != 0)
+        self.num_batches = self.dataset_size // batch_size + (self.dataset_size % batch_size != 0)
 
     @staticmethod
     def move_folders(source, dest):
@@ -45,10 +45,8 @@ class Selected:
         temp = f"{self.dataset_folder}/tmp"
 
         img_idx = start_img_idx
-        batch_index = start_img_idx/self.batch_size
+        batch_index = start_img_idx // self.batch_size
         batch_path = f"{self.dataset_path}/{batch_index}"
-        if self.chunk and not os.path.exists(batch_path):
-            os.makedirs(batch_path)
 
         # Unzip
         for archive in self.archive_files:
@@ -77,7 +75,8 @@ class Selected:
                     print(f" > The {archive} is moved without chunking!")
 
             else:
-            
+                if not os.path.exists(batch_path):
+                    os.makedirs(batch_path)
                 for root, dirs, files in os.walk(temp):
                     if self.verbose:
                         print(f" > root: {root}, dirs: {dirs}, files:{files}.")
@@ -95,8 +94,7 @@ class Selected:
                 if self.verbose:
                     print(f" > The {archive} is chunked!")
                             
-            shutil.rmtree(temp)                    
-        self.num_batches = batch_index + 1
+            shutil.rmtree(temp)       
 
         if self.verbose:
             print(f" > Preparing {self.dataset_name} dataset complete!")
