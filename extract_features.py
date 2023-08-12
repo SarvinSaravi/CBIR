@@ -48,7 +48,7 @@ def extract_features():
     dataset = load_dataset(dataset_name=dataset_name,
                            verbose=verbose,
                            )
-    # dataset.prepare()
+    # dataset.prepare(start_img_idx=80000)
 
 
     model = load_model(model_name=model_name,
@@ -61,7 +61,7 @@ def extract_features():
     features_vectors = []
     img_names = []
     path_list = dataset.access_dataset()
-    start = 47
+    start = 80
     for folder_path in path_list:
         if start > 0:
             start -= 1
@@ -85,7 +85,7 @@ def extract_features():
                     file_name=file_name,
                     file_dir=folder_path,
                     )
-        os.system('cls')
+        # os.system('cls')
         print(f" > Making Feature Vectors for {folder_path} is Done!")
 
     end_time = time.time()

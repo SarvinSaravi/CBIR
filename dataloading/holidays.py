@@ -5,16 +5,16 @@ import zipfile
 
 class Holidays:
     def __init__(self,
-                 dataset_folder="results/holidays",
+                 dataset_folder="results/holidays",   # where all data about the dataset are kept
                  batch_size=1491,
-                 archive_files=[f"data/holidays/jpg{i}.tar.gz" for i in range(1,3)],
-                 chunk=False,
+                 archive_files=[f"data/holidays/jpg{i}.tar.gz" for i in range(1,3)], # source dataset files {.zip, .tar.gz}
+                 chunk=False, # True, if chunk the data based on batch_sizem False if all images in a single folder
                  verbose=False,
                  ) -> None:
         
         self.dataset_name="holidays"
         self.dataset_folder=dataset_folder
-        self.dataset_path=f"{dataset_folder}/images"
+        self.dataset_path=f"{dataset_folder}/images" # where all images goes.
         self.dataset_size = 1491
         self.batch_size = batch_size
         self.archive_files = archive_files
@@ -23,21 +23,8 @@ class Holidays:
 
         self.num_batches=self.dataset_size // batch_size + (self.dataset_size % batch_size != 0)
         
-
-    @staticmethod
-    def move_folders(source, dest):
-        
-        folders = [folder for folder in os.listdir(source) if os.path.isdir(os.path.join(source, folder))]
-        for folder in folders:
-            source_path = os.path.join(source, folder)
-            dest_path = os.path.join(dest, folder)
-            shutil.move(source_path, dest_path)
-        return
-    
-    def set_archive_files(self, files:[]):
-         self.archive_files = files
-
     def prepare(self, start_img_idx=0):
+
         if not os.path.exists(self.dataset_path):
             os.makedirs(self.dataset_path)
         if self.verbose:
@@ -46,10 +33,8 @@ class Holidays:
         temp = f"{self.dataset_folder}/tmp"
 
         img_idx = start_img_idx
-        batch_index = start_img_idx/self.batch_size
+        batch_index = start_img_idx // self.batch_size
         batch_path = f"{self.dataset_path}/{batch_index}"
-        if self.chunk and not os.path.exists(batch_path):
-            os.makedirs(batch_path)
         
         # Unzip
         for archive in self.archive_files:
@@ -75,6 +60,8 @@ class Holidays:
                     print(f" > The {archive} is moved without chunking!")
 
             else:
+                if not os.path.exists(batch_path):
+                    os.makedirs(batch_path)
                 for root, dirs, files in os.walk(temp):
                     for file in files:
                         if file.endswith(('.png', '.jpg', '.jpeg', '.gif')):
@@ -90,7 +77,6 @@ class Holidays:
                     print(f" > The {archive} is chunked!")
                             
             shutil.rmtree(temp)                    
-        self.num_batches = batch_index + 1
 
         if self.verbose:
             print(f" > Preparing {self.dataset_name} dataset complete!")

@@ -7,7 +7,7 @@ class Mirflickr1m:
     def __init__(self,
                  dataset_folder="results/mirflickr1m",
                  batch_size=10000,
-                 archive_files=[f"data/mirflickr1m/images{i}.zip" for i in range(8)],
+                 archive_files=[f"data/mirflickr1m/images{i}.zip" for i in range(8,10)],
                  chunk=True,
                  verbose=False,
                  ) -> None:
