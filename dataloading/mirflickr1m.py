@@ -5,16 +5,16 @@ import zipfile
 
 class Mirflickr1m:
     def __init__(self,
-                 dataset_folder="results/mirflickr1m",
+                 dataset_folder="results/mirflickr1m",  # where all data about the dataset are kept
                  batch_size=10000,
-                 archive_files=[f"data/mirflickr1m/images{i}.zip" for i in range(8,10)],
-                 chunk=True,
+                 archive_files=[f"data/mirflickr1m/images{i}.zip" for i in range(1)], # source dataset files {.zip, .tar.gz}
+                 chunk=True, # True, if chunk the data based on batch_sizem False if all images in a single folder
                  verbose=False,
                  ) -> None:
         
         self.dataset_name="mirflickr1m"
         self.dataset_folder=dataset_folder
-        self.dataset_path=f"{dataset_folder}/images"
+        self.dataset_path=f"{dataset_folder}/images"  # where all images goes.
         self.dataset_size = 1000000
         self.batch_size = batch_size
         self.archive_files = archive_files
@@ -25,18 +25,12 @@ class Mirflickr1m:
 
     @staticmethod
     def move_folders(source, dest):
-        batch_index = -1
         folders = [folder for folder in os.listdir(source) if os.path.isdir(os.path.join(source, folder))]
         for folder in folders:
             source_path = os.path.join(source, folder)
             dest_path = os.path.join(dest, folder)
             shutil.move(source_path, dest_path)
-            batch_index += 1
-        return batch_index
     
-    def set_archive_files(self, files:[]):
-         self.archive_files = files
-
     def prepare(self, start_img_idx=0):
 
         if not os.path.exists(self.dataset_path):
@@ -47,10 +41,9 @@ class Mirflickr1m:
         temp = f"{self.dataset_folder}/tmp"
 
         img_idx = start_img_idx
-        batch_index = start_img_idx/self.batch_size
+        batch_index = start_img_idx//self.batch_size
         batch_path = f"{self.dataset_path}/{batch_index}"
-        if self.chunk and not os.path.exists(batch_path):
-            os.makedirs(batch_path)
+        
         
         # Unzip
         for archive in self.archive_files:
@@ -77,14 +70,13 @@ class Mirflickr1m:
 
             elif self.batch_size == 10000:
 
-                batch_index = self.move_folders(f"{temp}/images", self.dataset_path)
+                self.move_folders(f"{temp}/images", self.dataset_path)
                 if self.verbose:
                     print(f" > The {archive} dataset is moved to {self.dataset_path}!")
             else:
+                if not os.path.exists(batch_path):
+                    os.makedirs(batch_path)
                 for root, dirs, files in os.walk(temp):
-                    if self.verbose:
-                        print(f" > root: {root}, dirs: {dirs}, files:{files}.")
-
                     for file in files:
                         if file.endswith(('.png', '.jpg', '.jpeg', '.gif')):
                             if img_idx == (batch_index + 1 ) * self.batch_size:
@@ -98,8 +90,7 @@ class Mirflickr1m:
                 if self.verbose:
                     print(f" > The {archive} is chunked!")
                             
-            shutil.rmtree(temp)                    
-        self.num_batches = batch_index + 1
+            shutil.rmtree(temp)
 
         if self.verbose:
             print(f" > Preparing {self.dataset_name} dataset complete!")
