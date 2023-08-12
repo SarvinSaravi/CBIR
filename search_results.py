@@ -10,7 +10,7 @@ def search_results():
     # Initialize
     K = 42
     # index_name = 'm_title_data_k%s' % K
-    searching_mechanism = 'prefix_search'
+    searching_mechanism = 'partitioning'
     index_name = searching_mechanism + '_title_data_k%s' % K
     total_time = 0
 

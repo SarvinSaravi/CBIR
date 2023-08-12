@@ -1,5 +1,5 @@
 import numpy as np
-from permutation_text import vector2text_processing
+from permutation_text import vector2text_processing_with_splitter
 
 
 def partitioning_by_number_segments(base_vector, num_sec, part_k=4):
@@ -8,7 +8,7 @@ def partitioning_by_number_segments(base_vector, num_sec, part_k=4):
         (the same number of vectors in truncated dimensions)
     """
     partition_list = np.array_split(base_vector, num_sec, axis=1)
-    print(" > Split array to partitions is Done!")
+    # print(" > Split array to partitions is Done!")
     # print(f" > The output is ( {len(partition_list)}, {partition_list[0].shape[0]}, {partition_list[0].shape[1]})")
     # print(partition_list)
 
@@ -16,10 +16,10 @@ def partitioning_by_number_segments(base_vector, num_sec, part_k=4):
 
     for part in partition_list:
         """ a list format """
-        text_strings = vector2text_processing(part, part_k)
+        text_strings = vector2text_processing_with_splitter(part, part_k)
         string_list.append(text_strings)
 
-    print(" > Creating text string for partitions is Done!")
+    # print(" > Creating text string for partitions is Done!")
     return string_list
 
 
