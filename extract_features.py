@@ -30,10 +30,8 @@ def extract_features():
     # Initializing ----------------------------------------------------
 
     # dataset_name can be "holidays", or "mirflickr1m", or "selected"
-    dataset_name = "mirflickr1m"
-    batch_size = 10000
-    chunk = False
-    dataset_folder = f"results/{dataset_name}"
+    dataset_name = "holidays"
+    
 
     model_name = "resnet101"
     rmac = False
@@ -44,12 +42,10 @@ def extract_features():
 
     # Start timing
     start_time = time.time()
-    # 800,000, 8,9.zip
     dataset = load_dataset(dataset_name=dataset_name,
                            verbose=verbose,
                            )
-    # dataset.prepare(start_img_idx=80000)
-
+    dataset.prepare() # to chunk or prepare images from source (.zip) files 
 
     model = load_model(model_name=model_name,
                        image_size=image_size,
@@ -61,11 +57,8 @@ def extract_features():
     features_vectors = []
     img_names = []
     path_list = dataset.access_dataset()
-    start = 80
+
     for folder_path in path_list:
-        if start > 0:
-            start -= 1
-            continue
         if not os.path.exists(folder_path):
             print(f" > {folder_path} is not existed!")
             continue
@@ -85,7 +78,7 @@ def extract_features():
                     file_name=file_name,
                     file_dir=folder_path,
                     )
-        # os.system('cls')
+        # os.system('cls')  # clear terminal
         print(f" > Making Feature Vectors for {folder_path} is Done!")
 
     end_time = time.time()
