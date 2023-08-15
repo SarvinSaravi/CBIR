@@ -10,13 +10,7 @@ def save_in_npz(data,
                 ):
     if not os.path.exists(file_dir):
         os.makedirs(file_dir)
-
-    if file_name == "S":
-        file_name = f"data_k{hyperparams['K']}_S{hyperparams['S']}"
-    elif file_name == "L":
-        file_name = f"data_k{hyperparams['K']}_l{hyperparams['L']}"
-
-    file_path = file_dir + "/" + file_name
+    file_path = f"{file_dir}/{file_name}"
     if not file_path.endswith(".npz"):
         file_path = file_path + ".npz"
 

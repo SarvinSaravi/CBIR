@@ -4,18 +4,20 @@ from keras.layers import Lambda, Input
 from keras.applications.resnet import preprocess_input
 import numpy as np
 
-from dataloading.dataloading import loading_image_dataset
+from dataloading.dataloading import loading_image_dataset, loading_an_image
 from models.rmac import RMAC
 
 class Resnet101:
     def __init__(self,
                  image_size: tuple,
                  rmac=True,
+                 verbose=False,
                  ):
         self.image_size = image_size
         self.input_shape = image_size + (3,)
         self.rmac = rmac
         self.model = None
+        self.verbose = verbose
         return
 
     def get_model(self,
@@ -48,18 +50,9 @@ class Resnet101:
         # print(model.summary())
         self.model = model
         return self
-
-    def extract_feature_vectors(self,
-                                dataset_path):
-        images_dict = loading_image_dataset(dataset_path,
-                                            self.image_size,
-                                            )
-        image_names = list(images_dict.keys())
-        image_list = list(images_dict.values())
-        image_list = np.vstack(image_list)
-        image_list = preprocess_input(image_list)
-        img_vectors = self.model.predict(image_list)
-        print("> The feature vectors shape:", img_vectors.shape)
-
-        return image_names, img_vectors
-
+    
+    def predict(self,x):
+        x = preprocess_input(x)
+        x = self.model.predict(x, verbose=self.verbose)
+        return x
+    

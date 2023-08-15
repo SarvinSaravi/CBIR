@@ -1,6 +1,6 @@
 # Visual Search
 
- Current Dataset [Link](dataloading/Selected dataset)
+ mirflickr1m Dataset [Link](https://press.liacs.nl/mirflickr/mirflickr1m.v3b/)
 
 
 `extract_features.py` 
