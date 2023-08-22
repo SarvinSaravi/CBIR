@@ -1,6 +1,7 @@
 import numpy as np
 import os
 import csv
+import json
 
 
 def save_in_npz(data,
@@ -26,7 +27,7 @@ def save_in_npz(data,
 
 
 def save_in_csv(data,
-                hyperparams = None,
+                hyperparams=None,
                 file_dir="results/csv",
                 file_name="S",
                 ):
@@ -44,4 +45,18 @@ def save_in_csv(data,
         writer = csv.writer(csvfile)
         writer.writerows(zip(*data))
     print("Saving to", file_path, "is done!")
+    return
+
+
+def save_in_json(data, file_dir="results/json", file_name=""):
+    file_path = file_dir + "/" + file_name
+    if not file_path.endswith(".json"):
+        file_path = file_path + ".json"
+
+    json_object = json.dumps(data, indent=3)
+
+    with open(file_path, "w", newline="") as outfile:
+        outfile.write(json_object)
+
+    # print("Saving to", file_path, "is done!")
     return

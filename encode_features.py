@@ -1,6 +1,6 @@
 from dataloading.dataloading import loading_from_npz
 import numpy as np
-# from reports.save_in_files import save_in_csv
+# from reports.save_in_files import save_in_json
 import time
 from crelu import load_crelu
 # from permutation_text import vector2text_processing_with_splitter
@@ -19,8 +19,11 @@ def encode_features():
 
     start_time = time.time()
     # Loading features
-    data = dict(loading_from_npz(file_name="Main dataset_features.npz"))
+    data = dict(loading_from_npz(file_dir="results/npz/Mirflickr1m/99", file_name="feature_vectors.npz"))
+    # data = dict(loading_from_npz(file_name="Main dataset_features.npz"))
     img_names, img_vectors = np.array(list(data.keys())), np.array(list(data.values()))
+
+    img_vectors = img_vectors.reshape(10000, 2048)
 
     # Making CReLU Vectors
     crelu_vectors = load_crelu(img_vectors)
@@ -45,17 +48,19 @@ def encode_features():
     print(" >  The partitioning procedure is complete and the number of partitions is : ", len(partition_string_list))
 
     # save output of encoded features
-    # file_name = "main data_encoded_data_k%s" % K
-    # save_in_csv(data=(img_names, string_list),  # each column of .csv
-    #             file_name=file_name,
-    #             )
+    # file_name = "data_encoded_data_k%s" % K
+    # file_path = 'results/json/Flickr1M/partitioning/0'
+    # save_in_json(data=(img_names, partition_string_list),
+    #              file_name=file_name,
+    #              file_dir=file_path
+    #              )
 
     # save/index(string_list) into Elasticsearch
     # index_name = 'm_title_data_k%s' % K
     index_name = indexing_mechanism + '_title_data_k%s' % K
     elastic_indexing(img_names, partition_string_list, index_name, indexing_method=indexing_mechanism)
     print(" > Indexing data in Elasticsearch with method %s is Done!" % indexing_mechanism)
-    print("| Elasticsearch Index Name | = " + index_name)
+    # print("| Elasticsearch Index Name | = " + index_name)
 
     # time measurement
     end_time = time.time()

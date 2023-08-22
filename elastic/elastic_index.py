@@ -1,5 +1,7 @@
 from elasticsearch import Elasticsearch
 
+from reports.save_in_files import save_in_json
+
 # from reports.save_in_files import save_in_csv
 
 timeout_ms = 60000
@@ -188,11 +190,12 @@ def elastic_indexing_with_partitioning(title_list, partition_data_list, focus_in
     last_id = 0
 
     # Connect to 'http://localhost:9200'
-    es = Elasticsearch("http://localhost:9200", request_timeout=timeout_ms)
+    # es = Elasticsearch("http://localhost:9200", request_timeout=timeout_ms)
     index_name = focus_index
 
     # Check if index exists
-    index_exists = es.indices.exists(index=index_name)
+    # index_exists = es.indices.exists(index=index_name)
+    index_exists = False
 
     if not index_exists:
         data = {
@@ -212,7 +215,7 @@ def elastic_indexing_with_partitioning(title_list, partition_data_list, focus_in
         }
 
         # Create index with defined settings/mappings
-        es.indices.create(index=index_name, mappings=mappings, settings=settings)
+        # es.indices.create(index=index_name, mappings=mappings, settings=settings)
 
     # inject data to index
     for doc_index in range(len(partition_data_list[0])):
@@ -223,7 +226,15 @@ def elastic_indexing_with_partitioning(title_list, partition_data_list, focus_in
         for x, part_str in enumerate(doc_strings):
             data['part' + str(x + 1)] = part_str
 
-        es.index(index=index_name, id=str(int(last_id) + (doc_index + 1)), document=data)
+        # save output of encoded features
+        file_name = 'id_' + str(doc_index + 1)
+        file_path = 'results/json/Flickr1M/partitioning/99'
+        save_in_json(data=data,
+                     file_name=file_name,
+                     file_dir=file_path
+                     )
+
+        # es.index(index=index_name, id=str(int(last_id) + (doc_index + 1)), document=data)
 
 
 # the main function for redirecting to others
@@ -246,7 +257,6 @@ def elastic_indexing(title_list, data_list, focus_index, indexing_method, shard_
     else:
         print(" >>> Please clarify the indexing method <<< ")
     return
-
 
 # test-cases
 # str_list = [
