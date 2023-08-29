@@ -1,9 +1,13 @@
+import os
 import time
 import numpy as np
+import json
+import random
 
 from dataloading.dataloading import loading_from_npz
 from elastic import elastic_search_by_vector
 from evaluation.evaluation_functions import get_queries, result_assessment
+from reports.save_in_files import save_in_json
 
 
 def search_results():
@@ -54,5 +58,55 @@ def search_results():
     print("The code took %s seconds to execute with K = %s" % (duration, K))
 
 
+def create_queries():
+    # Initialize
+    K = 42
+    start_time = time.time()
+
+    # Loading queries
+    for q_dir in range(10):
+
+        for query in range(100):
+            id_number = random.randint(1, 10000)
+            file_path = 'results/json/Flickr1M/partitioning/%s/id_%s.json' % (q_dir, id_number)
+
+            with open(file_path) as f:
+                data = json.load(f)
+                partitions = []
+
+                for key in data.keys():
+                    if key != 'title':
+                        partitions.append(data[key])
+
+                data_list = [{"match": {"part" + str(i + 1): part_str}} for i, part_str in enumerate(partitions)]
+
+                my_query = {
+                    "bool": {
+                        "should": data_list, "minimum_should_match": 1
+                    }
+                }
+
+                # save output of encoded query
+                file_name = 'query_id_' + str(id_number)
+                file_path = 'results/json/Flickr1M/Queries/%s' % q_dir
+
+                if not os.path.exists(file_path):
+                    os.makedirs(file_path)
+
+                save_in_json(data=my_query,
+                             file_name=file_name,
+                             file_dir=file_path
+                             )
+
+                f.close()
+
+    # time measurement
+    end_time = time.time()
+    duration = end_time - start_time
+
+    print("The code took %s seconds to execute with K = %s" % (duration, K))
+
+
 if __name__ == '__main__':
-    search_results()
+    # search_results()
+    create_queries()

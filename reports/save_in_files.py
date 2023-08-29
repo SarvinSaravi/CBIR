@@ -58,5 +58,7 @@ def save_in_json(data, file_dir="results/json", file_name=""):
     with open(file_path, "w", newline="") as outfile:
         outfile.write(json_object)
 
+        outfile.close()
+
     # print("Saving to", file_path, "is done!")
     return
